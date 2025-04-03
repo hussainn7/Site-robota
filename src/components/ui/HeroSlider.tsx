@@ -55,14 +55,20 @@ const HeroSlider: React.FC<HeroSliderProps> = ({
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="max-w-3xl text-center text-white p-4">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in opacity-0" 
+                  style={{animation: "fade-in 0.8s forwards 0.3s"}}>
                 {slide.title}
               </h2>
-              <p className="text-lg md:text-xl mb-8 animate-fade-in">
+              <p className="text-lg md:text-xl mb-8 animate-fade-in opacity-0"
+                 style={{animation: "fade-in 0.8s forwards 0.6s"}}>
                 {slide.description}
               </p>
               {slide.link && (
-                <Button asChild className="btn-primary animate-fade-in">
+                <Button 
+                  asChild 
+                  className="animate-fade-in opacity-0" 
+                  style={{animation: "fade-in 0.8s forwards 0.9s"}}
+                >
                   <Link to={slide.link}>Узнать больше</Link>
                 </Button>
               )}
@@ -73,13 +79,13 @@ const HeroSlider: React.FC<HeroSliderProps> = ({
       
       {/* Navigation arrows */}
       <button
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full focus:outline-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full focus:outline-none transition-all duration-300"
         onClick={prevSlide}
       >
         <ChevronLeft size={24} />
       </button>
       <button
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full focus:outline-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full focus:outline-none transition-all duration-300"
         onClick={nextSlide}
       >
         <ChevronRight size={24} />
@@ -90,7 +96,7 @@ const HeroSlider: React.FC<HeroSliderProps> = ({
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`h-2 w-8 rounded-full ${
+            className={`h-2 w-8 rounded-full transition-all duration-300 ${
               index === currentSlide ? "bg-white" : "bg-white/50"
             }`}
             onClick={() => setCurrentSlide(index)}

@@ -89,11 +89,12 @@ const Index = () => {
       <HeroSlider slides={heroSlides} />
 
       {/* About Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-agro-dark mb-6">
-              О предприятии
+            <h2 className="text-3xl md:text-4xl font-bold text-agro-dark mb-6 relative inline-block">
+              <span className="relative z-10">О предприятии</span>
+              <span className="absolute -bottom-2 left-0 w-full h-1 bg-agro opacity-30 rounded"></span>
             </h2>
             <p className="text-lg text-gray-700 mb-8">
               КСУП «Элит-Агро Больтиники» — это современное сельскохозяйственное предприятие, 
@@ -101,9 +102,9 @@ const Index = () => {
               Наша миссия — производство высококачественной сельскохозяйственной продукции 
               с соблюдением экологических норм и применением современных технологий.
             </p>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="group">
               <Link to="/about" className="flex items-center">
-                Узнать больше <ChevronRight className="ml-2 h-4 w-4" />
+                Узнать больше <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
           </div>
@@ -115,9 +116,11 @@ const Index = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {quickLinks.map((link, index) => (
-              <Link key={index} to={link.link} className="group">
-                <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col card-hover">
-                  <div className="mb-4">{link.icon}</div>
+              <Link key={index} to={link.link} className="group transition-transform duration-300 hover:-translate-y-1">
+                <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col border border-gray-100">
+                  <div className="mb-4 transform transition-transform duration-300 group-hover:scale-110 bg-agro-beige/30 w-16 h-16 rounded-full flex items-center justify-center">
+                    {link.icon}
+                  </div>
                   <h3 className="text-xl font-bold mb-2">{link.title}</h3>
                   <p className="text-gray-600 mb-4 flex-grow">{link.description}</p>
                   <div className="text-agro font-medium flex items-center group-hover:translate-x-1 transition-transform">
@@ -131,17 +134,18 @@ const Index = () => {
       </section>
 
       {/* Latest News Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="container-custom">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-10">
-            <h2 className="text-3xl font-bold text-agro-dark">
-              Последние новости
+            <h2 className="text-3xl font-bold text-agro-dark relative inline-block mb-4 md:mb-0">
+              <span className="relative z-10">Последние новости</span>
+              <span className="absolute -bottom-2 left-0 w-full h-1 bg-agro opacity-30 rounded"></span>
             </h2>
             <Link 
               to="/news" 
-              className="text-agro hover:text-agro-dark font-medium flex items-center mt-4 md:mt-0"
+              className="text-agro hover:text-agro-dark font-medium flex items-center group"
             >
-              Все новости <ChevronRight className="ml-1 h-4 w-4" />
+              Все новости <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
           
@@ -161,15 +165,16 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-agro text-white">
-        <div className="container-custom text-center">
+      <section className="py-20 bg-agro text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-agro-dark/80 to-agro/60"></div>
+        <div className="container-custom text-center relative z-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Заинтересованы в сотрудничестве?
           </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
             Мы всегда открыты для новых партнерств и готовы обсудить возможности сотрудничества
           </p>
-          <Button asChild variant="outline" size="lg" className="bg-white text-agro hover:bg-gray-100">
+          <Button asChild variant="outline" size="lg" className="bg-white text-agro hover:bg-gray-100 shadow-lg transform transition-transform hover:scale-105">
             <Link to="/contacts">Связаться с нами</Link>
           </Button>
         </div>
