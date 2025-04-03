@@ -5,7 +5,7 @@ import HeroSlider from "@/components/ui/HeroSlider";
 import NewsCard from "@/components/ui/NewsCard";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Grain, Tractor, Users, Award, ChevronRight } from "lucide-react";
+import { Wheat, Tractor, Users, Award, ChevronRight } from "lucide-react";
 
 const Index = () => {
   // Sample data for hero slider
@@ -58,7 +58,7 @@ const Index = () => {
   // Quick links with icons
   const quickLinks = [
     {
-      icon: <Grain className="h-8 w-8 text-agro" />,
+      icon: <Wheat className="h-8 w-8 text-agro" />,
       title: "Продукция",
       description: "Зерновые, бобовые, технические культуры",
       link: "/products",

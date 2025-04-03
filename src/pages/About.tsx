@@ -4,7 +4,7 @@ import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import Timeline from "@/components/ui/Timeline";
 import ImageGallery from "@/components/ui/ImageGallery";
-import { Target, Plant, ShieldCheck, TrendingUp } from "lucide-react";
+import { Target, Leaf, ShieldCheck, TrendingUp } from "lucide-react";
 
 const About = () => {
   // Timeline data
@@ -121,7 +121,7 @@ const About = () => {
             
             <div className="bg-white rounded-lg p-6 shadow-md text-center card-hover">
               <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-agro-beige mb-4">
-                <Plant className="h-8 w-8 text-agro" />
+                <Leaf className="h-8 w-8 text-agro" />
               </div>
               <h3 className="text-xl font-bold mb-3">Экологичность</h3>
               <p className="text-gray-600">
