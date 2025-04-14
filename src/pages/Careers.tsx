@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
@@ -7,74 +6,13 @@ import ResumeForm from "@/components/ui/ResumeForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAdminData } from "@/context/AdminDataContext";
 
 const Careers = () => {
+  const { vacancies } = useAdminData();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedVacancy, setSelectedVacancy] = useState("");
   
-  // Sample vacancies data
-  const vacancies = [
-    {
-      id: 1,
-      title: "Агроном",
-      department: "Растениеводство",
-      location: "д. Больтиники",
-      salary: "от 1500 руб.",
-      description: "Мы ищем опытного агронома для организации и контроля полевых работ, разработки технологических карт и мониторинга состояния посевов.",
-      requirements: [
-        "Высшее образование по специальности \"Агрономия\"",
-        "Опыт работы в сельском хозяйстве от 3 лет",
-        "Знание современных агротехнологий",
-        "Умение работать с сельскохозяйственной техникой",
-        "Ответственность, организованность, нацеленность на результат"
-      ]
-    },
-    {
-      id: 2,
-      title: "Механизатор",
-      department: "Механизация",
-      location: "д. Больтиники",
-      salary: "от 1200 руб.",
-      description: "Требуется механизатор для выполнения различных сельскохозяйственных работ на современной технике.",
-      requirements: [
-        "Опыт работы на сельскохозяйственной технике от 2 лет",
-        "Наличие водительского удостоверения категории В, С",
-        "Навыки работы с современной сельхозтехникой",
-        "Ответственность, исполнительность, трудолюбие"
-      ]
-    },
-    {
-      id: 3,
-      title: "Зоотехник",
-      department: "Животноводство",
-      location: "д. Больтиники",
-      salary: "от 1400 руб.",
-      description: "Приглашаем на работу зоотехника для организации и контроля процессов кормления, содержания и разведения сельскохозяйственных животных.",
-      requirements: [
-        "Высшее образование по специальности \"Зоотехния\"",
-        "Опыт работы в животноводстве от 2 лет",
-        "Знание современных методов разведения и содержания КРС",
-        "Умение вести учетную документацию",
-        "Ответственность, инициативность, аналитические способности"
-      ]
-    },
-    {
-      id: 4,
-      title: "Бухгалтер",
-      department: "Бухгалтерия",
-      location: "д. Больтиники",
-      salary: "от 1300 руб.",
-      description: "Требуется бухгалтер для ведения учета в сельскохозяйственном предприятии.",
-      requirements: [
-        "Высшее экономическое образование",
-        "Опыт работы в бухгалтерии от 3 лет",
-        "Знание программы 1С:Бухгалтерия",
-        "Опыт работы в сельскохозяйственных предприятиях (желательно)",
-        "Внимательность, ответственность, аккуратность"
-      ]
-    }
-  ];
-
   // Handle apply to vacancy
   const handleApply = (title: string) => {
     setSelectedVacancy(title);
