@@ -69,16 +69,35 @@ const Products = () => {
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={product.name}
-                  description={product.description}
-                  image={product.image}
-                  price={product.price}
-                  category={categories.find(cat => cat.id === product.category)?.name || product.category}
-                  onOrder={() => handleOrderClick(product.name)}
-                />
+                <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  {typeof product.image === 'string' && (
+                    <div className="relative h-48 overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      {product.category === 'grain' && (
+                        <span className="absolute top-4 left-4 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                          Зерновые культуры
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                    <p className="text-gray-600 mb-4">{product.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold text-agro">от {product.price} руб/т</span>
+                      <button
+                        onClick={() => handleOrderClick(product.name)}
+                        className="bg-agro hover:bg-agro-dark text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+                      >
+                        Заказать
+                      </button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (

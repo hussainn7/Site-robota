@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from "react";
 
 // Types
 type Product = {
   id: number;
   name: string;
   description: string;
-  image: string;
+  image: string | File;
+  imageUrl?: string;
   price: string;
   category: string;
 };
@@ -20,15 +21,27 @@ type Vacancy = {
   requirements: string[];
 };
 
+type News = {
+  id: number;
+  title: string;
+  content: string;
+  image: string | File;
+  date: string;
+};
+
 type AdminDataContextType = {
   products: Product[];
   vacancies: Vacancy[];
+  news: News[];
   addProduct: (product: Omit<Product, "id">) => void;
   editProduct: (product: Product) => void;
   removeProduct: (id: number) => void;
   addVacancy: (vacancy: Omit<Vacancy, "id">) => void;
   editVacancy: (vacancy: Vacancy) => void;
   removeVacancy: (id: number) => void;
+  addNews: (news: Omit<News, "id">) => void;
+  editNews: (news: News) => void;
+  removeNews: (id: number) => void;
 };
 
 const defaultProducts: Product[] = [
@@ -168,6 +181,16 @@ const defaultVacancies: Vacancy[] = [
   }
 ];
 
+const defaultNews: News[] = [
+  {
+    id: 1,
+    title: "Новый урожай пшеницы",
+    content: "В этом году мы собрали рекордный урожай озимой пшеницы.",
+    image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800",
+    date: "2025-04-15"
+  }
+];
+
 const AdminDataContext = createContext<AdminDataContextType | undefined>(undefined);
 
 export const useAdminData = () => {
@@ -177,15 +200,123 @@ export const useAdminData = () => {
 };
 
 export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
-  // Try to load from localStorage, else use defaults
   const [products, setProducts] = useState<Product[]>(() => {
     const stored = localStorage.getItem("products");
     return stored ? JSON.parse(stored) : defaultProducts;
   });
+
   const [vacancies, setVacancies] = useState<Vacancy[]>(() => {
     const stored = localStorage.getItem("vacancies");
     return stored ? JSON.parse(stored) : defaultVacancies;
   });
+
+  const [news, setNews] = useState<News[]>(() => {
+    const stored = localStorage.getItem("news");
+    return stored ? JSON.parse(stored) : defaultNews;
+  });
+
+  // Get next available ID by finding the highest ID across all entities
+  const getNextId = () => {
+    const allIds = [
+      ...products.map(p => p.id),
+      ...vacancies.map(v => v.id),
+      ...news.map(n => n.id)
+    ];
+    return allIds.length ? Math.max(...allIds) + 1 : 1;
+  };
+
+  // Products CRUD
+  const addProduct = (product: Omit<Product, "id">) => {
+    const newProduct = { ...product, id: getNextId() };
+    
+    if (product.image instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const productWithImage = { ...newProduct, image: base64String };
+        setProducts(prev => [...prev, productWithImage]);
+        localStorage.setItem('products', JSON.stringify([...products, productWithImage]));
+      };
+      reader.readAsDataURL(product.image);
+    } else {
+      setProducts(prev => [...prev, newProduct]);
+      localStorage.setItem('products', JSON.stringify([...products, newProduct]));
+    }
+  };
+  const editProduct = (product: Product) => {
+    if (product.image instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const productWithImage = { ...product, image: base64String };
+        setProducts(prev => prev.map(p => p.id === product.id ? productWithImage : p));
+        localStorage.setItem('products', JSON.stringify(products.map(p => p.id === product.id ? productWithImage : p)));
+      };
+      reader.readAsDataURL(product.image);
+    } else {
+      setProducts(prev => prev.map(p => p.id === product.id ? product : p));
+      localStorage.setItem('products', JSON.stringify(products.map(p => p.id === product.id ? product : p)));
+    }
+  };
+  const removeProduct = (id: number) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
+    localStorage.setItem('products', JSON.stringify(products.filter(p => p.id !== id)));
+  };
+
+  // Vacancies CRUD
+  const addVacancy = (vacancy: Omit<Vacancy, "id">) => {
+    const newVacancy = { ...vacancy, id: getNextId() };
+    setVacancies(prev => [...prev, newVacancy]);
+    localStorage.setItem('vacancies', JSON.stringify([...vacancies, newVacancy]));
+  };
+  const editVacancy = (vacancy: Vacancy) => {
+    setVacancies(prev => prev.map(v => v.id === vacancy.id ? vacancy : v));
+    localStorage.setItem('vacancies', JSON.stringify(vacancies.map(v => v.id === vacancy.id ? vacancy : v)));
+  };
+  const removeVacancy = (id: number) => {
+    setVacancies(prev => prev.filter(v => v.id !== id));
+    localStorage.setItem('vacancies', JSON.stringify(vacancies.filter(v => v.id !== id)));
+  };
+
+  // News CRUD
+  const addNews = (newsItem: Omit<News, "id">) => {
+    const newNews = { ...newsItem, id: getNextId() };
+    
+    if (newsItem.image instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const newsWithImage = { ...newNews, image: base64String };
+        setNews(prev => [...prev, newsWithImage]);
+        localStorage.setItem('news', JSON.stringify([...news, newsWithImage]));
+      };
+      reader.readAsDataURL(newsItem.image);
+    } else {
+      setNews(prev => [...prev, newNews]);
+      localStorage.setItem('news', JSON.stringify([...news, newNews]));
+    }
+  };
+
+  const editNews = (newsItem: News) => {
+    if (newsItem.image instanceof File) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        const newsWithImage = { ...newsItem, image: base64String };
+        setNews(prev => prev.map(n => n.id === newsItem.id ? newsWithImage : n));
+        localStorage.setItem('news', JSON.stringify(news.map(n => n.id === newsItem.id ? newsWithImage : n)));
+      };
+      reader.readAsDataURL(newsItem.image);
+    } else {
+      setNews(prev => prev.map(n => n.id === newsItem.id ? newsItem : n));
+      localStorage.setItem('news', JSON.stringify(news.map(n => n.id === newsItem.id ? newsItem : n)));
+    }
+  };
+
+  const removeNews = (id: number) => {
+    setNews(prev => prev.filter(n => n.id !== id));
+    localStorage.setItem('news', JSON.stringify(news.filter(n => n.id !== id)));
+  };
 
   useEffect(() => {
     localStorage.setItem("products", JSON.stringify(products));
@@ -193,40 +324,25 @@ export const AdminDataProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     localStorage.setItem("vacancies", JSON.stringify(vacancies));
   }, [vacancies]);
-
-  // Products CRUD
-  const addProduct = (product: Omit<Product, "id">) => {
-    setProducts(prev => [...prev, { ...product, id: Date.now() }]);
-  };
-  const editProduct = (product: Product) => {
-    setProducts(prev => prev.map(p => (p.id === product.id ? product : p)));
-  };
-  const removeProduct = (id: number) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
-  };
-
-  // Vacancies CRUD
-  const addVacancy = (vacancy: Omit<Vacancy, "id">) => {
-    setVacancies(prev => [...prev, { ...vacancy, id: Date.now() }]);
-  };
-  const editVacancy = (vacancy: Vacancy) => {
-    setVacancies(prev => prev.map(v => (v.id === vacancy.id ? vacancy : v)));
-  };
-  const removeVacancy = (id: number) => {
-    setVacancies(prev => prev.filter(v => v.id !== id));
-  };
+  useEffect(() => {
+    localStorage.setItem("news", JSON.stringify(news));
+  }, [news]);
 
   return (
     <AdminDataContext.Provider
       value={{
         products,
         vacancies,
+        news,
         addProduct,
         editProduct,
         removeProduct,
         addVacancy,
         editVacancy,
         removeVacancy,
+        addNews,
+        editNews,
+        removeNews,
       }}
     >
       {children}
