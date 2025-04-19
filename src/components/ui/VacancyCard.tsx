@@ -10,6 +10,7 @@ interface VacancyCardProps {
   salary: string;
   description: string;
   requirements: string[];
+  date: string;
   onApply: () => void;
 }
 
@@ -20,6 +21,7 @@ const VacancyCard: React.FC<VacancyCardProps> = ({
   salary,
   description,
   requirements,
+  date,
   onApply,
 }) => {
   return (
@@ -29,6 +31,7 @@ const VacancyCard: React.FC<VacancyCardProps> = ({
           <div>
             <h3 className="text-xl font-bold">{title}</h3>
             <p className="text-gray-600">{department} · {location}</p>
+            <p className="text-gray-500 text-sm mt-1">Дата публикации: {new Date(date).toLocaleDateString('ru-RU')}</p>
           </div>
           <div className="bg-agro-beige text-agro-dark px-4 py-2 rounded-md font-medium text-center md:text-right whitespace-nowrap">
             {salary}

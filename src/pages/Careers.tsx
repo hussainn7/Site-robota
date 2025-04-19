@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import VacancyCard from "@/components/ui/VacancyCard";
@@ -7,11 +7,56 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAdminData } from "@/context/AdminDataContext";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 const Careers = () => {
   const { vacancies } = useAdminData();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedVacancy, setSelectedVacancy] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [sortOption, setSortOption] = useState("date-desc");
+  
+  // Get unique departments for filter
+  const departments = useMemo(() => {
+    const depts = [...new Set(vacancies.map(vacancy => vacancy.department))];
+    return ["all", ...depts];
+  }, [vacancies]);
+  
+  // Filter and sort vacancies
+  const filteredAndSortedVacancies = useMemo(() => {
+    // First filter by search query
+    let filtered = vacancies.filter(vacancy => {
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        vacancy.title.toLowerCase().includes(searchLower) ||
+        vacancy.description.toLowerCase().includes(searchLower) ||
+        vacancy.department.toLowerCase().includes(searchLower)
+      );
+    });
+    
+    // Then filter by department
+    if (departmentFilter !== "all") {
+      filtered = filtered.filter(vacancy => vacancy.department === departmentFilter);
+    }
+    
+    // Then sort
+    return filtered.sort((a, b) => {
+      switch (sortOption) {
+        case "date-desc":
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "date-asc":
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case "title-asc":
+          return a.title.localeCompare(b.title);
+        case "title-desc":
+          return b.title.localeCompare(a.title);
+        default:
+          return 0;
+      }
+    });
+  }, [vacancies, searchQuery, departmentFilter, sortOption]);
   
   // Handle apply to vacancy
   const handleApply = (title: string) => {
@@ -40,12 +85,65 @@ const Careers = () => {
               Мы предлагаем конкурентную заработную плату, возможности для профессионального 
               роста и дружелюбную рабочую среду.
             </p>
+            
+            {/* Search and Filter Controls */}
+            <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+                    Поиск вакансий
+                  </label>
+                  <Input 
+                    id="search"
+                    type="text" 
+                    placeholder="Введите название или ключевое слово" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+                    Отдел
+                  </label>
+                  <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+                    <SelectTrigger id="department">
+                      <SelectValue placeholder="Выберите отдел" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {departments.map((dept) => (
+                        <SelectItem key={dept} value={dept}>
+                          {dept === "all" ? "Все отделы" : dept}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div>
+                  <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-1 text-left">
+                    Сортировка
+                  </label>
+                  <Select value={sortOption} onValueChange={setSortOption}>
+                    <SelectTrigger id="sort">
+                      <SelectValue placeholder="Сортировка" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="date-desc">Сначала новые</SelectItem>
+                      <SelectItem value="date-asc">Сначала старые</SelectItem>
+                      <SelectItem value="title-asc">По названию (А-Я)</SelectItem>
+                      <SelectItem value="title-desc">По названию (Я-А)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Vacancies List */}
           <div className="space-y-6">
-            {vacancies.length > 0 ? (
-              vacancies.map((vacancy) => (
+            {filteredAndSortedVacancies.length > 0 ? (
+              filteredAndSortedVacancies.map((vacancy) => (
                 <VacancyCard
                   key={vacancy.id}
                   title={vacancy.title}
@@ -54,13 +152,16 @@ const Careers = () => {
                   salary={vacancy.salary}
                   description={vacancy.description}
                   requirements={vacancy.requirements}
+                  date={vacancy.date}
                   onApply={() => handleApply(vacancy.title)}
                 />
               ))
             ) : (
               <div className="text-center py-12 bg-white rounded-lg shadow-md">
                 <p className="text-gray-600 text-lg">
-                  В настоящее время открытых вакансий нет
+                  {searchQuery || departmentFilter !== "all" ? 
+                    "По вашему запросу вакансий не найдено" : 
+                    "В настоящее время открытых вакансий нет"}
                 </p>
               </div>
             )}

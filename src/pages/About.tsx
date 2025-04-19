@@ -223,20 +223,13 @@ const About = () => {
             </div>
             
             <div className="lg:col-span-2 overflow-hidden rounded-lg h-[400px] shadow-md">
-              {/* You can replace this with an actual Google Maps embed */}
-              <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                <p className="text-gray-700">Здесь будет интерактивная карта</p>
-                {/* Placeholder for the actual map */}
-                {/* 
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12345.67890!2d23.8181!3d53.6884!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTPCsDQxJzE4LjIiTiAyM8KwNDknMDUuMiJF!5e0!3m2!1sen!2sby!4v1600000000000!5m2!1sen!2sby" 
-                  width="100%" 
-                  height="100%" 
-                  style="border:0;" 
-                  allowfullscreen="" 
-                  loading="lazy"
-                ></iframe>
-                */}
+              {/* Yandex Maps embed */}
+              <div className="w-full h-full">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: `<script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A02de9c257a1b238281bb0c8fa752a40d4b5d912d14731450cc1ec294c0f7a0fa&amp;width=100%&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>`
+                  }}
+                />
               </div>
             </div>
           </div>

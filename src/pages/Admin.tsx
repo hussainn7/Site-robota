@@ -52,6 +52,8 @@ const errorMsg = {
 const adminLayout = {
   display: "flex",
   minHeight: "80vh",
+  height: "80vh",
+  maxHeight: "80vh",
   background: colors.secondary,
   borderRadius: 18,
   boxShadow: colors.shadow,
@@ -70,6 +72,10 @@ const sidebar = {
 const main = {
   flex: 1,
   padding: "40px 32px",
+  display: "flex",
+  flexDirection: "column" as const,
+  height: "100%",
+  overflow: "hidden",
 };
 const navBtn = (active: boolean) => ({
   background: active ? colors.primary : "#fff",
@@ -103,6 +109,14 @@ const addBtn = {
 const tableWrap = {
   overflowX: "auto" as const,
   marginTop: 18,
+  flex: 1,
+  display: "flex",
+  flexDirection: "column" as const,
+};
+const tableContainer = {
+  flex: 1,
+  overflow: "auto",
+  minHeight: 0,
 };
 const table = {
   width: "100%",
@@ -118,6 +132,9 @@ const th = {
   padding: 12,
   borderBottom: `1.5px solid ${colors.border}`,
   textAlign: "left" as const,
+  position: "sticky" as const,
+  top: 0,
+  zIndex: 1,
 };
 const td = {
   padding: 12,
@@ -181,6 +198,7 @@ interface VacancyForm {
   salary: string;
   description: string;
   requirements: string;
+  date: string;
 }
 
 interface NewsForm {
@@ -216,6 +234,7 @@ const Admin = () => {
     salary: "",
     description: "",
     requirements: "",
+    date: new Date().toISOString().split('T')[0],
   });
   const [newsForm, setNewsForm] = useState<NewsForm>({
     title: "",
@@ -293,21 +312,30 @@ const Admin = () => {
   };
   const openAddVacancy = () => {
     setEditVacancyId(null);
-    setVacancyForm({ title: "", department: "", location: "", salary: "", description: "", requirements: "" });
+    setVacancyForm({ title: "", department: "", location: "", salary: "", description: "", requirements: "", date: new Date().toISOString().split('T')[0] });
     setShowVacancyModal(true);
   };
   const openEditVacancy = (vacancy: any) => {
     setEditVacancyId(vacancy.id);
-    setVacancyForm({ ...vacancy, requirements: vacancy.requirements.join("\n") });
+    setVacancyForm({ ...vacancy, requirements: vacancy.requirements.join("\n"), date: vacancy.date });
     setShowVacancyModal(true);
   };
   const handleSaveVacancy = (e: React.FormEvent) => {
     e.preventDefault();
     if (!vacancyForm.title) return;
     if (editVacancyId !== null) {
-      editVacancy({ ...vacancyForm, id: editVacancyId, requirements: vacancyForm.requirements.split("\n").map(r => r.trim()).filter(Boolean) });
+      editVacancy({ 
+        ...vacancyForm, 
+        id: editVacancyId, 
+        requirements: vacancyForm.requirements.split("\n").map(r => r.trim()).filter(Boolean),
+        date: vacancyForm.date 
+      });
     } else {
-      addVacancy({ ...vacancyForm, requirements: vacancyForm.requirements.split("\n").map(r => r.trim()).filter(Boolean) });
+      addVacancy({ 
+        ...vacancyForm, 
+        requirements: vacancyForm.requirements.split("\n").map(r => r.trim()).filter(Boolean),
+        date: vacancyForm.date 
+      });
     }
     setShowVacancyModal(false);
   };
@@ -396,7 +424,9 @@ const Admin = () => {
       <div style={{
         ...adminLayout,
         flexDirection: isMobile ? "column" : "row",
-        minHeight: isMobile ? undefined : "80vh",
+        height: isMobile ? "auto" : "80vh",
+        minHeight: isMobile ? "80vh" : "80vh",
+        maxHeight: isMobile ? "none" : "80vh",
         boxShadow: isMobile ? undefined : colors.shadow,
         borderRadius: isMobile ? 0 : 18,
         background: isMobile ? colors.secondary : colors.secondary,
@@ -426,7 +456,7 @@ const Admin = () => {
               <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление продукцией</div>
               <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddProduct}>+ Добавить продукт</button>
               <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
-                <div style={{ overflowX: "auto" }}>
+                <div style={tableContainer}>
                   <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
                     <thead>
                       <tr>
@@ -439,7 +469,7 @@ const Admin = () => {
                           <td style={td}>{product.id}</td>
                           <td style={td}>{product.name}</td>
                           <td style={td}>{product.description}</td>
-                          <td style={td}><img src={product.image} alt="img" style={{ width: isMobile ? 32 : 50, borderRadius: 6 }} /></td>
+                          <td style={td}><img src={typeof product.image === 'string' ? product.image : URL.createObjectURL(product.image as File)} alt="img" style={{ width: isMobile ? 32 : 50, borderRadius: 6 }} /></td>
                           <td style={td}>{product.price}</td>
                           <td style={td}>{product.category}</td>
                           <td style={td}>
@@ -461,7 +491,7 @@ const Admin = () => {
               <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление вакансиями</div>
               <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddVacancy}>+ Добавить вакансию</button>
               <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
-                <div style={{ overflowX: "auto" }}>
+                <div style={tableContainer}>
                   <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
                     <thead>
                       <tr>
@@ -497,7 +527,7 @@ const Admin = () => {
               <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление новостями</div>
               <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddNews}>+ Добавить новость</button>
               <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
-                <div style={{ overflowX: "auto" }}>
+                <div style={tableContainer}>
                   <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
                     <thead>
                       <tr>
@@ -610,6 +640,13 @@ const Admin = () => {
             <input name="salary" placeholder="Зарплата" value={vacancyForm.salary} onChange={handleVacancyFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} />
             <input name="description" placeholder="Описание" value={vacancyForm.description} onChange={handleVacancyFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} />
             <textarea name="requirements" placeholder="Требования (каждое с новой строки)" value={vacancyForm.requirements} onChange={handleVacancyFormChange} style={{ ...loginInput, minHeight: 60, fontSize: isMobile ? 14 : 18 }} />
+            <input 
+              type="date" 
+              name="date" 
+              value={vacancyForm.date} 
+              onChange={handleVacancyFormChange} 
+              style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} 
+            />
             <div style={{ display: "flex", gap: 10, marginTop: 10, flexDirection: isMobile ? 'column' : 'row' }}>
               <button type="submit" style={{ ...addBtn, width: isMobile ? '100%' : undefined, fontSize: isMobile ? 15 : 16 }}>{editVacancyId ? "Сохранить" : "Добавить"}</button>
               <button type="button" style={{ ...addBtn, background: colors.danger, width: isMobile ? '100%' : undefined, fontSize: isMobile ? 15 : 16 }} onClick={() => setShowVacancyModal(false)}>Отмена</button>
