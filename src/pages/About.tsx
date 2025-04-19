@@ -1,9 +1,9 @@
-
 import React from "react";
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import Timeline from "@/components/ui/Timeline";
 import ImageGallery from "@/components/ui/ImageGallery";
+import YandexMap from "@/components/ui/YandexMap";
 import { Target, Leaf, ShieldCheck, TrendingUp } from "lucide-react";
 
 const About = () => {
@@ -225,10 +225,10 @@ const About = () => {
             <div className="lg:col-span-2 overflow-hidden rounded-lg h-[400px] shadow-md">
               {/* Yandex Maps embed */}
               <div className="w-full h-full">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: `<script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A02de9c257a1b238281bb0c8fa752a40d4b5d912d14731450cc1ec294c0f7a0fa&amp;width=100%&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>`
-                  }}
+                <YandexMap 
+                  width="100%" 
+                  height="400px"
+                  className="rounded-lg shadow-lg"
                 />
               </div>
             </div>
