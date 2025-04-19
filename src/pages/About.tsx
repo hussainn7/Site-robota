@@ -222,15 +222,8 @@ const About = () => {
               </div>
             </div>
             
-            <div className="lg:col-span-2 overflow-hidden rounded-lg h-[400px] shadow-md">
-              {/* Yandex Maps embed */}
-              <div className="w-full h-full">
-                <YandexMap 
-                  width="100%" 
-                  height="400px"
-                  className="rounded-lg shadow-lg"
-                />
-              </div>
+            <div className="lg:col-span-2 overflow-hidden rounded-lg shadow-md">
+              <YandexMap height="350px" />
             </div>
           </div>
         </div>

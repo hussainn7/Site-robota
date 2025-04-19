@@ -1,28 +1,26 @@
 import React, { useEffect, useRef } from 'react';
 
-interface YandexMapProps {
-  width?: string | number;
-  height?: string | number;
-  className?: string;
-}
-
 declare global {
   interface Window {
-    ymaps: any;
+    ymaps: {
+      ready: (callback: () => void) => void;
+      Map: new (element: HTMLElement, options: any) => any;
+      Placemark: new (coordinates: number[], properties: any, options: any) => any;
+    };
   }
 }
 
-const YandexMap: React.FC<YandexMapProps> = ({ 
-  width = '100%', 
-  height = '400px',
-  className = ''
-}) => {
+interface YandexMapProps {
+  height?: string;
+}
+
+const YandexMap: React.FC<YandexMapProps> = ({ height = '400px' }) => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load Yandex Maps API
+    // Load Yandex Maps script
     const script = document.createElement('script');
-    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=ru_RU';
+    script.src = 'https://api-maps.yandex.ru/2.1/?apikey=ваш_API_ключ&lang=ru_RU';
     script.async = true;
     document.body.appendChild(script);
 
@@ -30,33 +28,46 @@ const YandexMap: React.FC<YandexMapProps> = ({
       window.ymaps.ready(() => {
         if (mapRef.current) {
           const map = new window.ymaps.Map(mapRef.current, {
-            center: [55.76, 37.64], // Default center (Moscow)
-            zoom: 10,
-            controls: ['zoomControl', 'fullscreenControl']
+            center: [53.902284, 27.561831],
+            zoom: 16,
+            controls: ['zoomControl', 'fullscreenControl'],
+            margin: 0
           });
 
-          // Add your marker or other map features here
-          const placemark = new window.ymaps.Placemark([55.76, 37.64], {
-            balloonContent: 'Your Location'
+          // Добавляем метку на карту
+          const placemark = new window.ymaps.Placemark([53.902284, 27.561831], {
+            balloonContent: 'КСУП «Элит-Агро Больтиники»'
           }, {
-            preset: 'islands#redDotIcon'
+            preset: 'islands#greenDotIconWithCaption'
           });
 
           map.geoObjects.add(placemark);
+          map.behaviors.disable('scrollZoom');
+          
+          // Ensure map fills container
+          map.container.fitToViewport();
         }
       });
     };
 
     return () => {
-      document.body.removeChild(script);
+      // Cleanup
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 
   return (
     <div 
       ref={mapRef} 
-      style={{ width, height }} 
-      className={className}
+      className="w-full h-full"
+      style={{ 
+        height,
+        margin: 0,
+        padding: 0,
+        position: 'relative'
+      }}
     />
   );
 };
