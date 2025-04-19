@@ -28,14 +28,14 @@ const YandexMap: React.FC<YandexMapProps> = ({ height = '400px' }) => {
       window.ymaps.ready(() => {
         if (mapRef.current) {
           const map = new window.ymaps.Map(mapRef.current, {
-            center: [54.238958, 25.303808],
+            center: [54.235267, 25.300388],
             zoom: 16,
             controls: ['zoomControl', 'fullscreenControl'],
             margin: 0
           });
 
           // Добавляем метку на карту
-          const placemark = new window.ymaps.Placemark([54.238958, 25.303808], {
+          const placemark = new window.ymaps.Placemark([54.235267, 25.300388], {
             balloonContent: 'КСУП «Элит-Агро Больтиники»'
           }, {
             preset: 'islands#greenDotIconWithCaption'
