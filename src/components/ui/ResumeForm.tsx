@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,7 @@ interface FormValues {
   coverLetter: string;
 }
 
-const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
+const ResumeForm = ({ vacancyTitle }: ResumeFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fileName, setFileName] = useState("");
   
@@ -51,117 +50,74 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-2xl font-bold mb-2">
-        {vacancyTitle ? `Вакансия: ${vacancyTitle}` : "Отправить резюме"}
-      </h3>
-      <p className="text-gray-600 mb-6">
-        Заполните форму ниже, чтобы отправить свое резюме
-      </p>
+    <form className="space-y-3">
+      {vacancyTitle && (
+        <div className="mb-3">
+          <h3 className="text-base font-medium mb-1">Вакансия: {vacancyTitle}</h3>
+        </div>
+      )}
       
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <Label htmlFor="name">Имя</Label>
-          <Input
-            id="name"
-            placeholder="Ваше полное имя"
-            {...register("name", { required: "Имя обязательно" })}
+      <div>
+        <label htmlFor="name" className="text-sm font-medium block mb-1">
+          Имя
+        </label>
+        <Input id="name" placeholder="Ваше полное имя" />
+      </div>
+
+      <div>
+        <label htmlFor="email" className="text-sm font-medium block mb-1">
+          Email
+        </label>
+        <Input id="email" type="email" placeholder="Ваш email" />
+      </div>
+
+      <div>
+        <label htmlFor="phone" className="text-sm font-medium block mb-1">
+          Телефон
+        </label>
+        <Input id="phone" type="tel" placeholder="Ваш номер телефона" />
+      </div>
+
+      <div>
+        <label htmlFor="experience" className="text-sm font-medium block mb-1">
+          Опыт работы
+        </label>
+        <Input id="experience" placeholder="Кратко укажите ваш опыт работы" />
+      </div>
+
+      <div>
+        <label htmlFor="resume" className="text-sm font-medium block mb-1">
+          Резюме (PDF, DOC, DOCX)
+        </label>
+        <div className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:border-primary transition-colors">
+          <input
+            type="file"
+            id="resume"
+            className="hidden"
+            accept=".pdf,.doc,.docx"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-          )}
-        </div>
-        
-        <div>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            placeholder="Ваш email"
-            type="email"
-            {...register("email", { 
-              required: "Email обязателен",
-              pattern: {
-                value: /\S+@\S+\.\S+/,
-                message: "Неверный формат email"
-              }
-            })}
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
-        
-        <div>
-          <Label htmlFor="phone">Телефон</Label>
-          <Input
-            id="phone"
-            placeholder="Ваш номер телефона"
-            type="tel"
-            {...register("phone", { required: "Телефон обязателен" })}
-          />
-          {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
-          )}
-        </div>
-        
-        <div>
-          <Label htmlFor="experience">Опыт работы</Label>
-          <Input
-            id="experience"
-            placeholder="Кратко укажите ваш опыт работы"
-            {...register("experience", { required: "Опыт работы обязателен" })}
-          />
-          {errors.experience && (
-            <p className="text-red-500 text-sm mt-1">{errors.experience.message}</p>
-          )}
-        </div>
-        
-        <div>
-          <Label htmlFor="resume">Резюме (PDF, DOC, DOCX)</Label>
-          <div className="flex items-center justify-center w-full">
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <Upload className="w-8 h-8 mb-3 text-gray-500" />
-                <p className="mb-2 text-sm text-gray-500">
-                  <span className="font-semibold">Нажмите для загрузки</span> или перетащите файл
-                </p>
-                <p className="text-xs text-gray-500">PDF, DOC, DOCX (макс. 10MB)</p>
-              </div>
-              <input
-                id="resume"
-                type="file"
-                className="hidden"
-                accept=".pdf,.doc,.docx"
-                {...register("resume", { 
-                  required: "Резюме обязательно" 
-                })}
-                onChange={handleFileChange}
-              />
-            </label>
+          <div className="text-sm text-muted-foreground">
+            <span className="block">Нажмите для загрузки или перетащите файл</span>
+            <span className="block text-xs mt-1">PDF, DOC, DOCX (макс. 10MB)</span>
           </div>
-          {fileName && (
-            <p className="text-sm text-gray-600 mt-2">Выбран файл: {fileName}</p>
-          )}
-          {errors.resume && (
-            <p className="text-red-500 text-sm mt-1">{errors.resume.message}</p>
-          )}
         </div>
-        
-        <div>
-          <Label htmlFor="coverLetter">Сопроводительное письмо</Label>
-          <Textarea
-            id="coverLetter"
-            placeholder="Расскажите о себе и почему вы подходите на эту должность"
-            rows={5}
-            {...register("coverLetter")}
-          />
-        </div>
-        
-        <Button type="submit" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? "Отправка..." : "Отправить резюме"}
-        </Button>
-      </form>
-    </div>
+      </div>
+
+      <div>
+        <label htmlFor="cover" className="text-sm font-medium block mb-1">
+          Сопроводительное письмо
+        </label>
+        <textarea
+          id="cover"
+          className="min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          placeholder="Расскажите о себе и почему вы подходите на эту должность"
+        />
+      </div>
+
+      <Button type="submit" className="w-full">
+        Отправить резюме
+      </Button>
+    </form>
   );
 };
 

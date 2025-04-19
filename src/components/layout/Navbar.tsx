@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
@@ -204,52 +203,56 @@ const Navbar = () => {
         
         {/* Site-wide Search Dialog */}
         <Dialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Поиск по сайту</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4 py-4">
-              <Input
-                placeholder="Введите запрос для поиска..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                autoFocus
-                className="w-full"
-              />
+            <div className="flex flex-col h-full">
+              <div className="py-4">
+                <Input
+                  placeholder="Введите запрос для поиска..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  autoFocus
+                  className="w-full"
+                />
+              </div>
               
-              {searchResults.length > 0 ? (
-                <div className="mt-4 max-h-[60vh] overflow-y-auto">
-                  <div className="space-y-2">
-                    {searchResults.map((result) => (
-                      <div 
-                        key={`${result.type}-${result.id}`}
-                        className="p-3 hover:bg-gray-50 rounded-md cursor-pointer transition-colors"
-                        onClick={() => handleResultClick(result)}
-                      >
-                        <div className="flex items-start">
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 truncate">{result.title}</p>
-                            <p className="text-sm text-gray-500 truncate">{result.description}</p>
+              <div className="flex-1 min-h-0">
+                {searchResults.length > 0 ? (
+                  <div className="overflow-y-auto max-h-[60vh] pr-2">
+                    <div className="space-y-2">
+                      {searchResults.map((result) => (
+                        <div 
+                          key={`${result.type}-${result.id}`}
+                          className="p-4 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-gray-100"
+                          onClick={() => handleResultClick(result)}
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-gray-900 mb-1">{result.title}</p>
+                              <p className="text-sm text-gray-500 line-clamp-2">{result.description}</p>
+                            </div>
+                            <span className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              result.type === 'product' ? 'bg-blue-100 text-blue-800' :
+                              result.type === 'news' ? 'bg-green-100 text-green-800' :
+                              'bg-amber-100 text-amber-800'
+                            }`}>
+                              {result.type === 'product' ? 'Продукция' :
+                               result.type === 'news' ? 'Новости' :
+                               'Вакансии'}
+                            </span>
                           </div>
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            result.type === 'product' ? 'bg-blue-100 text-blue-800' :
-                            result.type === 'news' ? 'bg-green-100 text-green-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {result.type === 'product' ? 'Продукция' :
-                             result.type === 'news' ? 'Новости' :
-                             'Вакансии'}
-                          </span>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : searchQuery ? (
-                <div className="text-center py-8 text-gray-500">
-                  По вашему запросу ничего не найдено
-                </div>
-              ) : null}
+                ) : searchQuery ? (
+                  <div className="text-center py-8 text-gray-500">
+                    По вашему запросу ничего не найдено
+                  </div>
+                ) : null}
+              </div>
             </div>
           </DialogContent>
         </Dialog>

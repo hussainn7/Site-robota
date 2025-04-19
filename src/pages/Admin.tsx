@@ -51,27 +51,27 @@ const errorMsg = {
 };
 const adminLayout = {
   display: "flex",
-  minHeight: "80vh",
-  height: "80vh",
-  maxHeight: "80vh",
+  minHeight: "100vh",
+  height: "100vh",
+  maxHeight: "100vh",
   background: colors.secondary,
   borderRadius: 18,
   boxShadow: colors.shadow,
 };
 const sidebar = {
-  width: 220,
+  width: 280,
   background: "#f8fafc",
   borderRight: `1px solid ${colors.border}`,
   borderTopLeftRadius: 18,
   borderBottomLeftRadius: 18,
-  padding: 32,
+  padding: 40,
   display: "flex",
   flexDirection: "column" as const,
-  gap: 20,
+  gap: 28,
 };
 const main = {
   flex: 1,
-  padding: "40px 32px",
+  padding: "56px 48px",
   display: "flex",
   flexDirection: "column" as const,
   height: "100%",
@@ -83,32 +83,32 @@ const navBtn = (active: boolean) => ({
   border: `1.5px solid ${active ? colors.primary : colors.border}`,
   borderRadius: 8,
   fontWeight: 600,
-  fontSize: 17,
-  padding: "12px 0",
-  marginBottom: 8,
+  fontSize: 20,
+  padding: "16px 0",
+  marginBottom: 12,
   cursor: "pointer",
   transition: "all 0.2s"
 });
 const sectionHeader = {
-  fontSize: 28,
+  fontSize: 36,
   fontWeight: 700,
-  marginBottom: 28,
+  marginBottom: 36,
 };
 const addBtn = {
   background: colors.action,
   color: "#fff",
   border: "none",
   borderRadius: 8,
-  padding: "10px 22px",
-  fontSize: 16,
+  padding: "14px 28px",
+  fontSize: 18,
   fontWeight: 600,
   cursor: "pointer",
-  marginBottom: 18,
-  marginRight: 8,
+  marginBottom: 24,
+  marginRight: 12,
 };
 const tableWrap = {
   overflowX: "auto" as const,
-  marginTop: 18,
+  marginTop: 24,
   flex: 1,
   display: "flex",
   flexDirection: "column" as const,
@@ -129,27 +129,29 @@ const th = {
   background: "#f3f6fa",
   color: colors.text,
   fontWeight: 700,
-  padding: 12,
+  padding: 16,
   borderBottom: `1.5px solid ${colors.border}`,
   textAlign: "left" as const,
   position: "sticky" as const,
   top: 0,
   zIndex: 1,
+  fontSize: 17,
 };
 const td = {
-  padding: 12,
+  padding: 16,
   borderBottom: `1px solid ${colors.border}`,
   verticalAlign: "middle" as const,
+  fontSize: 16,
 };
 const iconBtn = (color: string) => ({
   background: color,
   color: "#fff",
   border: "none",
   borderRadius: 6,
-  padding: "6px 16px",
+  padding: "10px 20px",
   fontWeight: 600,
-  fontSize: 15,
-  marginRight: 8,
+  fontSize: 17,
+  marginRight: 12,
   cursor: "pointer",
   transition: "background 0.2s",
 });
@@ -164,7 +166,7 @@ const modalBg = {
 };
 const modalCard = {
   ...card,
-  maxWidth: 420,
+  maxWidth: 500,
   width: "100%",
   margin: 0,
   zIndex: 1001,
@@ -395,21 +397,21 @@ const Admin = () => {
 
   // --- MAIN ADMIN PANEL ---
   return (
-    <div style={{ maxWidth: 1200, margin: isMobile ? "0 auto" : "40px auto", padding: isMobile ? 0 : undefined }}>
+    <div style={{ maxWidth: 1400, margin: isMobile ? "0 auto" : "40px auto", padding: isMobile ? 0 : undefined }}>
       {/* Logout Button */}
       <button
         onClick={handleLogout}
         style={{
           position: "fixed",
-          top: 16,
-          right: 16,
+          top: 14,
+          right: 14,
           zIndex: 2000,
           background: colors.danger,
           color: "#fff",
           border: "none",
           borderRadius: 20,
-          padding: "7px 16px",
-          fontSize: 13,
+          padding: "10px 15px",
+          fontSize: 15,
           fontWeight: 600,
           cursor: "pointer",
           opacity: 0.85,
@@ -424,9 +426,9 @@ const Admin = () => {
       <div style={{
         ...adminLayout,
         flexDirection: isMobile ? "column" : "row",
-        height: isMobile ? "auto" : "80vh",
-        minHeight: isMobile ? "80vh" : "80vh",
-        maxHeight: isMobile ? "none" : "80vh",
+        height: isMobile ? "auto" : "100vh",
+        minHeight: isMobile ? "100vh" : "100vh",
+        maxHeight: isMobile ? "none" : "100vh",
         boxShadow: isMobile ? undefined : colors.shadow,
         borderRadius: isMobile ? 0 : 18,
         background: isMobile ? colors.secondary : colors.secondary,
@@ -434,30 +436,30 @@ const Admin = () => {
         {/* Sidebar Navigation */}
         <nav style={{
           ...sidebar,
-          width: isMobile ? "100%" : 220,
+          width: isMobile ? "100%" : 280,
           borderRight: isMobile ? "none" : `1px solid ${colors.border}`,
           borderTopLeftRadius: isMobile ? 0 : 18,
           borderBottomLeftRadius: isMobile ? 0 : 18,
           borderTopRightRadius: isMobile ? 0 : undefined,
           borderBottomRightRadius: isMobile ? 0 : undefined,
           flexDirection: isMobile ? "row" : "column",
-          gap: isMobile ? 0 : 20,
-          padding: isMobile ? "0 0 10px 0" : 32,
+          gap: isMobile ? 0 : 28,
+          padding: isMobile ? "0 0 14px 0" : 40,
           justifyContent: isMobile ? "space-around" : undefined,
         }}>
-          <button style={{ ...navBtn(activeTab === 'products'), flex: 1, fontSize: isMobile ? 15 : 17, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('products')}>Продукция</button>
-          <button style={{ ...navBtn(activeTab === 'vacancies'), flex: 1, fontSize: isMobile ? 15 : 17, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('vacancies')}>Вакансии</button>
-          <button style={{ ...navBtn(activeTab === 'news'), flex: 1, fontSize: isMobile ? 15 : 17, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('news')}>Новости</button>
+          <button style={{ ...navBtn(activeTab === 'products'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('products')}>Продукция</button>
+          <button style={{ ...navBtn(activeTab === 'vacancies'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('vacancies')}>Вакансии</button>
+          <button style={{ ...navBtn(activeTab === 'news'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('news')}>Новости</button>
         </nav>
-        <main style={{ ...main, padding: isMobile ? 12 : "40px 32px" }}>
+        <main style={{ ...main, padding: isMobile ? 14 : "56px 48px" }}>
           {/* Products Section */}
           {activeTab === 'products' && (
             <>
-              <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление продукцией</div>
-              <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddProduct}>+ Добавить продукт</button>
-              <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
+              <div style={{ ...sectionHeader, fontSize: isMobile ? 22 : 36, marginBottom: isMobile ? 18 : 36 }}>Управление продукцией</div>
+              <button style={{ ...addBtn, fontSize: isMobile ? 15 : 18, padding: isMobile ? "10px 12px" : "14px 28px" }} onClick={openAddProduct}>+ Добавить продукт</button>
+              <div style={{ ...tableWrap, marginTop: isMobile ? 12 : 24 }}>
                 <div style={tableContainer}>
-                  <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
+                  <table style={{ ...table, fontSize: isMobile ? 14 : 16 }}>
                     <thead>
                       <tr>
                         <th style={th}>ID</th><th style={th}>Название</th><th style={th}>Описание</th><th style={th}>Изображение</th><th style={th}>Цена</th><th style={th}>Категория</th><th style={th}></th>
@@ -469,7 +471,7 @@ const Admin = () => {
                           <td style={td}>{product.id}</td>
                           <td style={td}>{product.name}</td>
                           <td style={td}>{product.description}</td>
-                          <td style={td}><img src={typeof product.image === 'string' ? product.image : URL.createObjectURL(product.image as File)} alt="img" style={{ width: isMobile ? 32 : 50, borderRadius: 6 }} /></td>
+                          <td style={td}><img src={typeof product.image === 'string' ? product.image : URL.createObjectURL(product.image as File)} alt="img" style={{ width: isMobile ? 36 : 70, borderRadius: 8 }} /></td>
                           <td style={td}>{product.price}</td>
                           <td style={td}>{product.category}</td>
                           <td style={td}>
@@ -488,20 +490,23 @@ const Admin = () => {
           {/* Vacancies Section */}
           {activeTab === 'vacancies' && (
             <>
-              <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление вакансиями</div>
-              <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddVacancy}>+ Добавить вакансию</button>
-              <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
+              <div style={{ ...sectionHeader, fontSize: isMobile ? 22 : 36, marginBottom: isMobile ? 18 : 36 }}>Управление вакансиями</div>
+              <button style={{ ...addBtn, fontSize: isMobile ? 15 : 18, padding: isMobile ? "10px 12px" : "14px 28px" }} onClick={openAddVacancy}>+ Добавить вакансию</button>
+              <div style={{ ...tableWrap, marginTop: isMobile ? 12 : 24 }}>
                 <div style={tableContainer}>
-                  <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
+                  <table style={{ ...table, fontSize: isMobile ? 14 : 16 }}>
                     <thead>
                       <tr>
-                        <th style={th}>ID</th><th style={th}>Должность</th><th style={th}>Отдел</th><th style={th}>Локация</th><th style={th}>Зарплата</th><th style={th}>Описание</th><th style={th}>Требования</th><th style={th}></th>
+                        <th style={th}>ID</th>
+                        <th style={th}>Дата</th>
+                        <th style={th}>Должность</th><th style={th}>Отдел</th><th style={th}>Локация</th><th style={th}>Зарплата</th><th style={th}>Описание</th><th style={th}>Требования</th><th style={th}></th>
                       </tr>
                     </thead>
                     <tbody>
                       {vacancies.map(vacancy => (
                         <tr key={vacancy.id}>
                           <td style={td}>{vacancy.id}</td>
+                          <td style={td}>{vacancy.date}</td>
                           <td style={td}>{vacancy.title}</td>
                           <td style={td}>{vacancy.department}</td>
                           <td style={td}>{vacancy.location}</td>
@@ -524,11 +529,11 @@ const Admin = () => {
           {/* News Section */}
           {activeTab === 'news' && (
             <>
-              <div style={{ ...sectionHeader, fontSize: isMobile ? 20 : 28, marginBottom: isMobile ? 16 : 28 }}>Управление новостями</div>
-              <button style={{ ...addBtn, fontSize: isMobile ? 14 : 16, padding: isMobile ? "8px 10px" : "10px 22px" }} onClick={openAddNews}>+ Добавить новость</button>
-              <div style={{ ...tableWrap, marginTop: isMobile ? 10 : 18 }}>
+              <div style={{ ...sectionHeader, fontSize: isMobile ? 22 : 36, marginBottom: isMobile ? 18 : 36 }}>Управление новостями</div>
+              <button style={{ ...addBtn, fontSize: isMobile ? 15 : 18, padding: isMobile ? "10px 12px" : "14px 28px" }} onClick={openAddNews}>+ Добавить новость</button>
+              <div style={{ ...tableWrap, marginTop: isMobile ? 12 : 24 }}>
                 <div style={tableContainer}>
-                  <table style={{ ...table, fontSize: isMobile ? 13 : undefined }}>
+                  <table style={{ ...table, fontSize: isMobile ? 14 : 16 }}>
                     <thead>
                       <tr>
                         <th style={th}>ID</th>
@@ -548,7 +553,7 @@ const Admin = () => {
                           <td style={td}>{newsItem.content.substring(0, 100)}...</td>
                           <td style={td}>
                             {typeof newsItem.image === 'string' && (
-                              <img src={newsItem.image} alt="" style={{ width: isMobile ? 32 : 50, borderRadius: 6 }} />
+                              <img src={newsItem.image} alt="" style={{ width: isMobile ? 36 : 70, borderRadius: 8 }} />
                             )}
                           </td>
                           <td style={td}>
@@ -569,7 +574,7 @@ const Admin = () => {
       {/* Product Modal */}
       {showProductModal && (
         <div style={{ ...modalBg, padding: isMobile ? 8 : 0 }}>
-          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 420, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveProduct}>
+          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 500, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveProduct}>
             <h2 style={{ marginBottom: 18, fontSize: isMobile ? 18 : 22 }}>{editProductId ? "Редактировать продукт" : "Добавить продукт"}</h2>
             <input name="name" placeholder="Название" value={productForm.name} onChange={handleProductFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} autoFocus />
             <input name="description" placeholder="Описание" value={productForm.description} onChange={handleProductFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} />
@@ -603,13 +608,36 @@ const Admin = () => {
               >
                 {productForm.image instanceof File ? productForm.image.name : 'Нажмите, чтобы загрузить изображение'}
               </label>
-              {typeof productForm.image === 'string' && (
-                <div style={{ textAlign: 'center' }}>
+              {typeof productForm.image === 'string' && productForm.image && (
+                <div style={{ textAlign: 'center', position: 'relative' }}>
                   <img
                     src={productForm.image}
                     alt="Preview"
                     style={{ maxWidth: '100%', height: 120, objectFit: 'contain', borderRadius: 8 }}
                   />
+                  <button 
+                    type="button"
+                    onClick={() => setProductForm(prev => ({ ...prev, image: "" }))}
+                    style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      background: colors.danger,
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: 28,
+                      height: 28,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      fontSize: 16,
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    ×
+                  </button>
                 </div>
               )}
             </div>
@@ -632,7 +660,7 @@ const Admin = () => {
       {/* Vacancy Modal */}
       {showVacancyModal && (
         <div style={{ ...modalBg, padding: isMobile ? 8 : 0 }}>
-          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 420, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveVacancy}>
+          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 460, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveVacancy}>
             <h2 style={{ marginBottom: 18, fontSize: isMobile ? 18 : 22 }}>{editVacancyId ? "Редактировать вакансию" : "Добавить вакансию"}</h2>
             <input name="title" placeholder="Должность" value={vacancyForm.title} onChange={handleVacancyFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} autoFocus />
             <input name="department" placeholder="Отдел" value={vacancyForm.department} onChange={handleVacancyFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} />
@@ -658,7 +686,7 @@ const Admin = () => {
       {/* News Modal */}
       {showNewsModal && (
         <div style={{ ...modalBg, padding: isMobile ? 8 : 0 }}>
-          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 420, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveNews}>
+          <form style={{ ...modalCard, maxWidth: isMobile ? '98vw' : 500, padding: isMobile ? 14 : 32 }} onSubmit={handleSaveNews}>
             <h2 style={{ marginBottom: 18, fontSize: isMobile ? 18 : 22 }}>{editNewsId ? "Редактировать новость" : "Добавить новость"}</h2>
             
             <input
@@ -716,12 +744,35 @@ const Admin = () => {
                 {newsForm.image instanceof File ? newsForm.image.name : 'Нажмите, чтобы загрузить изображение'}
               </label>
               {typeof newsForm.image === 'string' && newsForm.image && (
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center', position: 'relative' }}>
                   <img
                     src={newsForm.image}
                     alt="Preview"
                     style={{ maxWidth: '100%', height: 120, objectFit: 'contain', borderRadius: 8 }}
                   />
+                  <button 
+                    type="button"
+                    onClick={() => setNewsForm(prev => ({ ...prev, image: "" }))}
+                    style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      background: colors.danger,
+                      color: '#fff',
+                      border: 'none',
+                      borderRadius: '50%',
+                      width: 28,
+                      height: 28,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      fontSize: 16,
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    ×
+                  </button>
                 </div>
               )}
             </div>

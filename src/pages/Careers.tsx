@@ -264,11 +264,16 @@ const Careers = () => {
 
       {/* Apply Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle className="text-2xl">Отклик на вакансию</DialogTitle>
+        <DialogContent className="sm:max-w-[500px] !translate-y-[-45%] p-4">
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-lg">Отклик на вакансию</DialogTitle>
+            <p className="text-sm text-muted-foreground">
+              Заполните форму ниже, чтобы отправить свое резюме
+            </p>
           </DialogHeader>
-          <ResumeForm vacancyTitle={selectedVacancy} />
+          <div className="py-1">
+            <ResumeForm vacancyTitle={selectedVacancy} />
+          </div>
         </DialogContent>
       </Dialog>
     </Layout>

@@ -29,10 +29,10 @@ function App() {
               {/* Small Admin Button in top-right corner */}
               <Link
                 to="/admin"
+                className="admin-button"
                 style={{
                   position: "fixed",
                   top: 16,
-                  right: 16,
                   zIndex: 2000,
                   background: "#222",
                   color: "#fff",
@@ -46,8 +46,8 @@ function App() {
                   transition: "opacity 0.2s, background 0.2s",
                   cursor: "pointer",
                 }}
-                onMouseEnter={e => (e.currentTarget.style.opacity = "1")}
-                onMouseLeave={e => (e.currentTarget.style.opacity = "0.75")}
+                onMouseEnter={e => e.currentTarget.style.opacity = "1"}
+                onMouseLeave={e => e.currentTarget.style.opacity = "0.75"}
               >
                 Admin
               </Link>
