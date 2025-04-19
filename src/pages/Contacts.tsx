@@ -86,9 +86,13 @@ const Contacts = () => {
                   </div>
                 </div>
                 
-                {/* QR Code Placeholder - This would be generated with actual contact information */}
-                <div className="w-48 h-48 mx-auto bg-gray-200 flex items-center justify-center">
-                  <p className="text-gray-500 text-center">QR-код <br />с контактами</p>
+                {/* QR Code */}
+                <div className="w-48 h-48 mx-auto overflow-hidden">
+                  <img 
+                    src="https://i.ibb.co/N6Sr7WWZ/IMG-3456.jpg"
+                    alt="QR код для сохранения контактов"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
             </div>

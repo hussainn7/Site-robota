@@ -180,7 +180,7 @@ const About = () => {
         <div className="container-custom">
           <h2 className="section-title mb-12">Наше расположение</h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
               <h3 className="text-xl font-bold mb-4">Контактная информация</h3>
               
@@ -222,8 +222,10 @@ const About = () => {
               </div>
             </div>
             
-            <div className="lg:col-span-2 overflow-hidden rounded-lg shadow-md">
-              <YandexMap height="350px" />
+            <div className="lg:col-span-2 overflow-hidden rounded-lg h-full">
+              <div className="w-full h-[400px]">
+                <YandexMap height="100%" />
+              </div>
             </div>
           </div>
         </div>
