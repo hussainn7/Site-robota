@@ -1,8 +1,7 @@
-
 import React from "react";
 import Layout from "@/components/layout/Layout";
 import HeroSlider from "@/components/ui/HeroSlider";
-import NewsCard from "@/components/ui/NewsCard";
+import LatestNews from "@/components/ui/LatestNews";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Wheat, Tractor, Users, Award, ChevronRight } from "lucide-react";
@@ -27,31 +26,6 @@ const Index = () => {
       title: "Экологичное производство",
       description: "Мы придерживаемся принципов устойчивого развития и заботимся об окружающей среде",
       link: "/about",
-    },
-  ];
-
-  // Sample data for news
-  const latestNews = [
-    {
-      id: 1,
-      title: "Завершена уборка озимых зерновых культур",
-      excerpt: "Наше предприятие успешно завершило уборку озимых зерновых культур с рекордной урожайностью 52 ц/га.",
-      date: "15.08.2023",
-      image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop",
-    },
-    {
-      id: 2,
-      title: "Новая сельскохозяйственная техника",
-      excerpt: "Парк техники предприятия пополнился новыми тракторами John Deere для повышения эффективности полевых работ.",
-      date: "01.07.2023",
-      image: "https://images.unsplash.com/photo-1498936178812-4b2e558d2937?auto=format&fit=crop",
-    },
-    {
-      id: 3,
-      title: "Участие в международной выставке АгроЭкспо-2023",
-      excerpt: "Наше предприятие представило свою продукцию на крупнейшей агропромышленной выставке региона.",
-      date: "10.06.2023",
-      image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop",
     },
   ];
 
@@ -99,34 +73,34 @@ const Index = () => {
             <p className="text-lg text-gray-700 mb-8">
               КСУП «Элит-Агро Больтиники» — это современное сельскохозяйственное предприятие, 
               специализирующееся на выращивании зерновых культур и животноводстве. 
-              Наша миссия — производство высококачественной сельскохозяйственной продукции 
-              с соблюдением экологических норм и применением современных технологий.
+              Мы находимся в Гродненском районе Республики Беларусь и обрабатываем 
+              свыше 3000 гектаров сельскохозяйственных угодий.
             </p>
-            <Button asChild variant="outline" size="lg" className="group">
-              <Link to="/about" className="flex items-center">
-                Узнать больше <ChevronRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
+            <Link to="/about">
+              <Button size="lg" className="group">
+                Подробнее о нас
+                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Quick Links Section */}
+      {/* Quick Links */}
       <section className="py-16">
         <div className="container-custom">
+          <h2 className="section-title mb-12 text-center">Наши направления</h2>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {quickLinks.map((link, index) => (
-              <Link key={index} to={link.link} className="group transition-transform duration-300 hover:-translate-y-1">
-                <div className="bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col border border-gray-100">
-                  <div className="mb-4 transform transition-transform duration-300 group-hover:scale-110 bg-agro-beige/30 w-16 h-16 rounded-full flex items-center justify-center">
-                    {link.icon}
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{link.title}</h3>
-                  <p className="text-gray-600 mb-4 flex-grow">{link.description}</p>
-                  <div className="text-agro font-medium flex items-center group-hover:translate-x-1 transition-transform">
-                    Подробнее <ChevronRight className="ml-1 h-4 w-4" />
-                  </div>
-                </div>
+              <Link 
+                key={index} 
+                to={link.link}
+                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow card-hover"
+              >
+                <div className="mb-4">{link.icon}</div>
+                <h3 className="text-xl font-bold mb-2">{link.title}</h3>
+                <p className="text-gray-600">{link.description}</p>
               </Link>
             ))}
           </div>
@@ -134,33 +108,9 @@ const Index = () => {
       </section>
 
       {/* Latest News Section */}
-      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+      <section className="py-16 bg-gray-50">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-10">
-            <h2 className="text-3xl font-bold text-agro-dark relative inline-block mb-4 md:mb-0">
-              <span className="relative z-10">Последние новости</span>
-              <span className="absolute -bottom-2 left-0 w-full h-1 bg-agro opacity-30 rounded"></span>
-            </h2>
-            <Link 
-              to="/news" 
-              className="text-agro hover:text-agro-dark font-medium flex items-center group"
-            >
-              Все новости <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {latestNews.map((news) => (
-              <NewsCard
-                key={news.id}
-                id={news.id}
-                title={news.title}
-                excerpt={news.excerpt}
-                date={news.date}
-                image={news.image}
-              />
-            ))}
-          </div>
+          <LatestNews count={3} title="Последние новости" />
         </div>
       </section>
 
@@ -168,15 +118,15 @@ const Index = () => {
       <section className="py-20 bg-agro text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-agro-dark/80 to-agro/60"></div>
         <div className="container-custom text-center relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Заинтересованы в сотрудничестве?
-          </h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
-            Мы всегда открыты для новых партнерств и готовы обсудить возможности сотрудничества
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Готовы к сотрудничеству?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Свяжитесь с нами для получения дополнительной информации о нашей продукции и услугах
           </p>
-          <Button asChild variant="outline" size="lg" className="bg-white text-agro hover:bg-gray-100 shadow-lg transform transition-transform hover:scale-105">
-            <Link to="/contacts">Связаться с нами</Link>
-          </Button>
+          <Link to="/contact">
+            <Button size="lg" variant="outline" className="bg-white text-agro hover:bg-gray-100">
+              Связаться с нами
+            </Button>
+          </Link>
         </div>
       </section>
     </Layout>
