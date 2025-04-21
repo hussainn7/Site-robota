@@ -26,13 +26,14 @@ function App() {
         <AdminDataProvider>
           <BrowserRouter>
             <div>
-              {/* Small Admin Button in top-right corner */}
+              {/* Small Admin Button in top-left corner */}
               <Link
                 to="/admin"
                 className="admin-button"
                 style={{
                   position: "fixed",
                   top: 16,
+                  left: 270,  
                   zIndex: 2000,
                   background: "#222",
                   color: "#fff",

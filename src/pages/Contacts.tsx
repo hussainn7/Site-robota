@@ -89,7 +89,7 @@ const Contacts = () => {
                 {/* QR Code */}
                 <div className="w-48 h-48 mx-auto overflow-hidden">
                   <img 
-                    src="https://i.ibb.co/N6Sr7WWZ/IMG-3456.jpg"
+                    src="https://i.postimg.cc/BQGppnGW/5197285658434072990.jpg"
                     alt="QR код для сохранения контактов"
                     className="w-full h-full object-contain"
                   />

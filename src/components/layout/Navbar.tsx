@@ -26,7 +26,7 @@ const Navbar = () => {
 
   const navigation = [
     { name: "Главная", href: "/" },
-    { name: "О компании", href: "/about" },
+    { name: "О предприятии", href: "/about" },
     { name: "Продукция", href: "/products" },
     { name: "Новости", href: "/news" },
     { name: "Вакансии", href: "/careers" },

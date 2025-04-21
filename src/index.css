@@ -194,12 +194,12 @@
 
 /* Admin button positioning */
 .admin-button {
-  right: 16px;
+  left: 16px;
 }
 
 @media (max-width: 768px) {
   .admin-button {
-    right: 60px;  /* Position it next to the menu button */
-    left: auto;
+    left: 16px;
+    right: auto;
   }
 }
