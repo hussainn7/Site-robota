@@ -10,22 +10,22 @@ const About = () => {
   // Timeline data
   const historyItems = [
     {
-      year: "1992",
+      year: "2009",
       title: "Основание предприятия",
-      description: "Создание сельскохозяйственного предприятия в деревне Больтиники",
+      description: "Создание сельскохозяйственного предприятия в агрогородке Больтиники",
     },
     {
-      year: "2000",
+      year: "2012",
       title: "Модернизация производства",
       description: "Первый этап модернизации сельскохозяйственной техники и оборудования",
     },
     {
-      year: "2008",
+      year: "2015",
       title: "Расширение земельных угодий",
       description: "Увеличение площади обрабатываемых земель до 3000 гектаров",
     },
     {
-      year: "2015",
+      year: "2018",
       title: "Внедрение новых технологий",
       description: "Использование GPS-навигации и точного земледелия в полевых работах",
     },
@@ -44,27 +44,27 @@ const About = () => {
   // Gallery images
   const galleryImages = [
     {
-      src: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop",
+      src: "https://i.postimg.cc/bJFYSbXC/5197285658434073185.jpg",
       alt: "Поля предприятия"
     },
     {
-      src: "https://images.unsplash.com/photo-1451981131264-d999998d18c9?auto=format&fit=crop",
+      src: "https://i.postimg.cc/mgNbNKfF/5197285658434073186.jpg",
       alt: "Сельскохозяйственная техника"
     },
     {
-      src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop",
+      src: "https://i.postimg.cc/WzFNG3T2/5197285658434073187.jpg",
       alt: "Зерновые культуры"
     },
     {
-      src: "https://images.unsplash.com/photo-1590682680695-43b964a3ae17?auto=format&fit=crop",
+      src: "https://i.postimg.cc/SsKNKdPY/5197285658434073188.jpg",
       alt: "Животноводство"
     },
     {
-      src: "https://images.unsplash.com/photo-1558818498-28c1e002b655?auto=format&fit=crop",
+      src: "https://i.postimg.cc/DyGfm8x6/5197285658434073189.jpg",
       alt: "Наша команда"
     },
     {
-      src: "https://images.unsplash.com/photo-1474440692490-2e83ae13ba29?auto=format&fit=crop",
+      src: "https://i.postimg.cc/5yhxnV28/5197285658434073190.jpg",
       alt: "Административное здание"
     },
   ];
@@ -72,7 +72,7 @@ const About = () => {
   return (
     <Layout>
       <PageHeader 
-        title="О компании" 
+        title="О предприятии" 
         description="История развития и ценности КСУП «Элит-Агро Больтиники»"
         bgImage="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop"
       />
@@ -81,7 +81,7 @@ const About = () => {
       <section className="py-16">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
-            <h2 className="section-title mb-8">Наша компания</h2>
+            <h2 className="section-title mb-8">Наше предприятие</h2>
             <p className="text-lg text-gray-700 mb-6">
               КСУП «Элит-Агро Больтиники» — современное сельскохозяйственное предприятие, 
               специализирующееся на выращивании зерновых культур и животноводстве. 
@@ -188,7 +188,7 @@ const About = () => {
                 <div>
                   <h4 className="font-bold text-agro">Адрес:</h4>
                   <p className="text-gray-700">
-                    д. Больтиники, Гродненский район<br />
+                    аг. Больтиники, Гродненский район<br />
                     Гродненская область<br />
                     Республика Беларусь, 231741
                   </p>
@@ -206,8 +206,8 @@ const About = () => {
                 <div>
                   <h4 className="font-bold text-agro">Email:</h4>
                   <p className="text-gray-700">
-                    <a href="mailto:info@elit-agro.by" className="hover:text-agro">
-                      info@elit-agro.by
+                    <a href="mailto:elit-agro-2009@mail.ru" className="hover:text-agro">
+                      elit-agro-2009@mail.ru
                     </a>
                   </p>
                 </div>

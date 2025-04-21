@@ -8,10 +8,10 @@ import YandexMap from "@/components/ui/YandexMap";
 const Contacts = () => {
   // Company contacts
   const contactInfo = {
-    address: "д. Больтиники, Гродненский район, Гродненская область, Республика Беларусь, 231741",
+    address: "аг. Больтиники, Гродненский район, Гродненская область, Республика Беларусь, 231741",
     phone: "+375 (29) 123-45-67",
-    email: "info@elit-agro.by",
-    workHours: "Понедельник - Пятница: 8:00 - 17:00, Обед: 12:00 - 13:00",
+    email: "elit-agro-2009@mail.ru",
+    workHours: "Понедельник - Пятница: 8:00 - 17:00, Обед: 13:00 - 14:00",
     mapLocation: {
       lat: 53.6884,
       lng: 23.8181,

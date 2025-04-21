@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Phone, Mail, MapPin } from "lucide-react";
@@ -61,7 +60,7 @@ const Footer = () => {
             <div className="space-y-3">
               <p className="flex items-start">
                 <MapPin className="mr-2 h-5 w-5 text-agro-beige shrink-0" />
-                <span className="text-gray-300">д. Больтиники, Гродненский район, Беларусь</span>
+                <span className="text-gray-300">аг. Больтиники, Гродненский район, Беларусь</span>
               </p>
               <p className="flex items-center">
                 <Phone className="mr-2 h-5 w-5 text-agro-beige" />
@@ -71,8 +70,8 @@ const Footer = () => {
               </p>
               <p className="flex items-center">
                 <Mail className="mr-2 h-5 w-5 text-agro-beige" />
-                <a href="mailto:info@elit-agro.by" className="text-gray-300 hover:text-white transition">
-                  info@elit-agro.by
+                <a href="mailto:elit-agro-2009@mail.ru" className="text-gray-300 hover:text-white transition">
+                  elit-agro-2009@mail.ru
                 </a>
               </p>
             </div>
