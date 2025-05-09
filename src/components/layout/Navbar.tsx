@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -145,6 +145,13 @@ const Navbar = () => {
             >
               <Search size={20} />
             </button>
+            <Link 
+              to="/admin"
+              className="p-2 text-gray-500 hover:text-agro hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Админ-панель"
+            >
+              <Settings size={20} />
+            </Link>
             <Button asChild>
               <Link to="/feedback" className="btn-primary">
                 Связаться
@@ -189,6 +196,14 @@ const Navbar = () => {
                 <Search size={18} />
                 <span>Поиск</span>
               </button>
+              <Link
+                to="/admin"
+                className="flex items-center space-x-2 px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Settings size={18} />
+                <span>Админ-панель</span>
+              </Link>
               <Button asChild className="mx-4">
                 <Link
                   to="/feedback"

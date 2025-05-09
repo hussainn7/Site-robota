@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
+import { useInquiries } from "@/context/InquiriesContext";
 import { useNavigate } from 'react-router-dom';
 
 // --- STYLE SYSTEM ---
@@ -210,12 +211,25 @@ interface NewsForm {
   date: string;
 }
 
+interface Inquiry {
+  id: number;
+  type: 'product' | 'vacancy' | 'contact';
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  productName?: string;
+  vacancyTitle?: string;
+  date: string;
+  status: 'new' | 'in-progress' | 'completed';
+}
+
 const Admin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [activeTab, setActiveTab] = useState<'products' | 'vacancies' | 'news'>("products");
+  const [activeTab, setActiveTab] = useState<'products' | 'vacancies' | 'news' | 'inquiries'>("products");
   const [showProductModal, setShowProductModal] = useState(false);
   const [showVacancyModal, setShowVacancyModal] = useState(false);
   const [showNewsModal, setShowNewsModal] = useState(false);
@@ -259,6 +273,8 @@ const Admin = () => {
     editNews,
     removeNews,
   } = useAdminData();
+
+  const { inquiries, updateInquiryStatus, deleteInquiry } = useInquiries();
 
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -378,6 +394,18 @@ const Admin = () => {
     if (window.confirm("Удалить новость?")) removeNews(id);
   };
 
+  // Add new function to handle inquiry status change
+  const handleInquiryStatusChange = (id: number, newStatus: 'new' | 'in-progress' | 'completed') => {
+    updateInquiryStatus(id, newStatus);
+  };
+
+  // Add new function to delete inquiry
+  const handleDeleteInquiry = (id: number) => {
+    if (window.confirm("Удалить обращение?")) {
+      deleteInquiry(id);
+    }
+  };
+
   // --- LOGIN PAGE ---
   if (!loggedIn) {
     return (
@@ -450,6 +478,7 @@ const Admin = () => {
           <button style={{ ...navBtn(activeTab === 'products'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('products')}>Продукция</button>
           <button style={{ ...navBtn(activeTab === 'vacancies'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('vacancies')}>Вакансии</button>
           <button style={{ ...navBtn(activeTab === 'news'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('news')}>Новости</button>
+          <button style={{ ...navBtn(activeTab === 'inquiries'), flex: 1, fontSize: isMobile ? 16 : 20, borderRadius: isMobile ? 0 : 8 }} onClick={() => setActiveTab('inquiries')}>Обращения</button>
         </nav>
         <main style={{ ...main, padding: isMobile ? 14 : "56px 48px" }}>
           {/* Products Section */}
@@ -559,6 +588,87 @@ const Admin = () => {
                           <td style={td}>
                             <button style={iconBtn(colors.action)} title="Редактировать" onClick={() => openEditNews(newsItem)}>✏️</button>
                             <button style={iconBtn(colors.danger)} title="Удалить" onClick={() => handleDeleteNews(newsItem.id)}>🗑️</button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Inquiries Section */}
+          {activeTab === 'inquiries' && (
+            <>
+              <div style={{ ...sectionHeader, fontSize: isMobile ? 22 : 36, marginBottom: isMobile ? 18 : 36 }}>
+                Управление заявками
+              </div>
+              <div style={{ ...tableWrap, marginTop: isMobile ? 12 : 24 }}>
+                <div style={tableContainer}>
+                  <table style={{ ...table, fontSize: isMobile ? 14 : 16 }}>
+                    <thead>
+                      <tr>
+                        <th style={th}>ID</th>
+                        <th style={th}>Дата</th>
+                        <th style={th}>Тип</th>
+                        <th style={th}>Имя</th>
+                        <th style={th}>Email</th>
+                        <th style={th}>Телефон</th>
+                        <th style={th}>Сообщение</th>
+                        <th style={th}>Статус</th>
+                        <th style={th}></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {inquiries.map(inquiry => (
+                        <tr key={inquiry.id}>
+                          <td style={td}>{inquiry.id}</td>
+                          <td style={td}>{new Date(inquiry.date).toLocaleDateString()}</td>
+                          <td style={td}>
+                            {inquiry.type === 'product' ? 'Заказ продукта' :
+                             inquiry.type === 'vacancy' ? 'Отклик на вакансию' :
+                             'Контактная форма'}
+                          </td>
+                          <td style={td}>{inquiry.name}</td>
+                          <td style={td}>{inquiry.email}</td>
+                          <td style={td}>{inquiry.phone}</td>
+                          <td style={td}>
+                            <div style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {inquiry.message}
+                            </div>
+                          </td>
+                          <td style={td}>
+                            <select
+                              value={inquiry.status}
+                              onChange={(e) => updateInquiryStatus(inquiry.id, e.target.value as Inquiry['status'])}
+                              style={{
+                                padding: '4px 8px',
+                                borderRadius: 4,
+                                border: '1px solid #ddd',
+                                backgroundColor: 
+                                  inquiry.status === 'new' ? '#e3f2fd' :
+                                  inquiry.status === 'in-progress' ? '#fff3e0' :
+                                  '#e8f5e9'
+                              }}
+                            >
+                              <option value="new">Новая</option>
+                              <option value="in-progress">В работе</option>
+                              <option value="completed">Завершена</option>
+                            </select>
+                          </td>
+                          <td style={td}>
+                            <button
+                              style={iconBtn(colors.danger)}
+                              title="Удалить"
+                              onClick={() => {
+                                if (window.confirm('Удалить заявку?')) {
+                                  deleteInquiry(inquiry.id);
+                                }
+                              }}
+                            >
+                              🗑️
+                            </button>
                           </td>
                         </tr>
                       ))}

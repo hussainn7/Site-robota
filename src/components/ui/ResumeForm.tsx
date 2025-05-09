@@ -3,9 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2 } from "lucide-react";
+import { useInquiries } from '@/context/InquiriesContext';
+import { toast } from 'sonner';
 
-const ResumeForm = () => {
-  const [isSubmitted, setIsSubmitted] = useState(false);
+interface ResumeFormProps {
+  vacancyTitle: string;
+}
+
+const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
+  const { addInquiry } = useInquiries();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,16 +20,25 @@ const ResumeForm = () => {
     message: "",
     resume: null as File | null,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to your backend
-    // For now, we'll just simulate a successful submission
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
+    setIsSubmitting(true);
+
+    try {
+      // Add the inquiry to the context
+      addInquiry({
+        type: 'vacancy',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: `${formData.message}\n\nЖелаемая должность: ${formData.position}\nРезюме: ${formData.resume?.name || 'Не прикреплено'}`,
+        vacancyTitle
+      });
+
+      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -32,7 +47,17 @@ const ResumeForm = () => {
         message: "",
         resume: null,
       });
-    }, 3000);
+      setSubmitSuccess(true);
+      toast.success('Ваше резюме успешно отправлено!');
+      
+      // Reset success message after 3 seconds
+      setTimeout(() => setSubmitSuccess(false), 3000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -46,7 +71,7 @@ const ResumeForm = () => {
     }
   };
 
-  if (isSubmitted) {
+  if (submitSuccess) {
     return (
       <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
         <CheckCircle2 className="w-16 h-16 text-green-500 mb-4 animate-bounce" />
@@ -59,102 +84,114 @@ const ResumeForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-2">Отклик на вакансию</h2>
+      <p className="text-gray-600 mb-6">
+        Отправьте свое резюме на вакансию: {vacancyTitle}
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              ФИО *
+            </label>
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              Email *
+            </label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              required
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+              Телефон *
+            </label>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full"
+            />
+          </div>
+          <div>
+            <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
+              Желаемая должность *
+            </label>
+            <Input
+              id="position"
+              name="position"
+              type="text"
+              required
+              value={formData.position}
+              onChange={handleChange}
+              className="w-full"
+            />
+          </div>
+        </div>
+
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-            ФИО
+          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+            Сопроводительное письмо *
+          </label>
+          <Textarea
+            id="message"
+            name="message"
+            required
+            value={formData.message}
+            onChange={handleChange}
+            className="w-full min-h-[120px]"
+            placeholder="Расскажите о себе и своем опыте работы"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-1">
+            Резюме (PDF, DOC, DOCX) *
           </label>
           <Input
-            id="name"
-            name="name"
-            type="text"
+            id="resume"
+            name="resume"
+            type="file"
+            accept=".pdf,.doc,.docx"
             required
-            value={formData.name}
-            onChange={handleChange}
+            onChange={handleFileChange}
             className="w-full"
           />
         </div>
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-            Email
-          </label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full"
-          />
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-            Телефон
-          </label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            required
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full"
-          />
-        </div>
-        <div>
-          <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-            Желаемая должность
-          </label>
-          <Input
-            id="position"
-            name="position"
-            type="text"
-            required
-            value={formData.position}
-            onChange={handleChange}
-            className="w-full"
-          />
-        </div>
-      </div>
-
-      <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-          Сопроводительное письмо
-        </label>
-        <Textarea
-          id="message"
-          name="message"
-          required
-          value={formData.message}
-          onChange={handleChange}
-          className="w-full min-h-[120px]"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-1">
-          Резюме (PDF, DOC, DOCX)
-        </label>
-        <Input
-          id="resume"
-          name="resume"
-          type="file"
-          accept=".pdf,.doc,.docx"
-          required
-          onChange={handleFileChange}
-          className="w-full"
-        />
-      </div>
-
-      <Button type="submit" className="w-full">
-        Отправить резюме
-      </Button>
-    </form>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-agro hover:bg-agro-dark text-white font-bold py-3 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+        >
+          {isSubmitting ? 'Отправка...' : 'Отправить резюме'}
+        </button>
+      </form>
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import Timeline from "@/components/ui/Timeline";
 import ImageGallery from "@/components/ui/ImageGallery";
 import YandexMap from "@/components/ui/YandexMap";
-import { Target, Leaf, ShieldCheck, TrendingUp } from "lucide-react";
+import { Target, Leaf, ShieldCheck, TrendingUp, Tractor, Award, Users } from "lucide-react";
 
 const About = () => {
   // Timeline data
@@ -69,86 +69,73 @@ const About = () => {
     },
   ];
 
+  const features = [
+    {
+      icon: <Tractor className="h-12 w-12 text-agro" />,
+      title: "Современная техника",
+      description: "Наше предприятие оснащено современной сельскохозяйственной техникой и оборудованием"
+    },
+    {
+      icon: <Award className="h-12 w-12 text-agro" />,
+      title: "Высокое качество",
+      description: "Мы производим продукцию, соответствующую международным стандартам качества"
+    },
+    {
+      icon: <Leaf className="h-12 w-12 text-agro" />,
+      title: "Экологичность",
+      description: "Мы придерживаемся принципов устойчивого развития и заботимся об окружающей среде"
+    },
+    {
+      icon: <Users className="h-12 w-12 text-agro" />,
+      title: "Профессионализм",
+      description: "В нашей команде работают высококвалифицированные специалисты"
+    }
+  ];
+
   return (
     <Layout>
       <PageHeader 
         title="О предприятии" 
-        description="История развития и ценности КСУП «Элит-Агро Больтиники»"
-        bgImage="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop"
+        description="КСУП «Элит-Агро Больтиники» - Ваш надежный партнер в сельском хозяйстве"
+        bgImage="https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop"
       />
 
-      {/* Company Description */}
       <section className="py-16">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="section-title mb-8">Наше предприятие</h2>
-            <p className="text-lg text-gray-700 mb-6">
-              КСУП «Элит-Агро Больтиники» — современное сельскохозяйственное предприятие, 
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl font-bold mb-6 text-agro-dark">О нашем предприятии</h2>
+            <p className="text-lg text-gray-700">
+              КСУП «Элит-Агро Больтиники» — это современное сельскохозяйственное предприятие, 
               специализирующееся на выращивании зерновых культур и животноводстве. 
               Мы находимся в Гродненском районе Республики Беларусь и обрабатываем 
               свыше 3000 гектаров сельскохозяйственных угодий.
             </p>
-            <p className="text-lg text-gray-700 mb-6">
-              Предприятие оснащено современной сельскохозяйственной техникой и применяет 
-              передовые агротехнологии для достижения высокой урожайности и качества продукции. 
-              Мы постоянно развиваемся, внедряем инновации и повышаем эффективность производства.
-            </p>
-            <p className="text-lg text-gray-700">
-              Наша команда состоит из опытных специалистов, преданных своему делу и 
-              стремящихся к постоянному совершенствованию. Мы гордимся нашими достижениями 
-              и с оптимизмом смотрим в будущее.
-            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="bg-white p-8 rounded-lg shadow-md text-center">
+                <div className="mb-4 flex justify-center">{feature.icon}</div>
+                <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Mission & Values */}
       <section className="py-16 bg-gray-50">
         <div className="container-custom">
-          <h2 className="section-title mb-12">Миссия и ценности</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="bg-white rounded-lg p-6 shadow-md text-center card-hover">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-agro-beige mb-4">
-                <Target className="h-8 w-8 text-agro" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Миссия</h3>
-              <p className="text-gray-600">
-                Производство высококачественной сельскохозяйственной продукции с использованием 
-                современных технологий и заботой об окружающей среде.
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center text-agro-dark">Наша миссия</h2>
+            <div className="bg-white p-8 rounded-lg shadow-md">
+              <p className="text-lg text-gray-700 mb-6">
+                Наша миссия — обеспечить население качественными сельскохозяйственными продуктами, 
+                способствуя развитию агропромышленного комплекса Республики Беларусь.
               </p>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 shadow-md text-center card-hover">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-agro-beige mb-4">
-                <Leaf className="h-8 w-8 text-agro" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Экологичность</h3>
-              <p className="text-gray-600">
-                Применение методов устойчивого земледелия и бережное отношение к природным 
-                ресурсам во всех аспектах нашей деятельности.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 shadow-md text-center card-hover">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-agro-beige mb-4">
-                <ShieldCheck className="h-8 w-8 text-agro" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Качество</h3>
-              <p className="text-gray-600">
-                Строгий контроль на всех этапах производства для обеспечения 
-                высшего качества и безопасности нашей продукции.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 shadow-md text-center card-hover">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-agro-beige mb-4">
-                <TrendingUp className="h-8 w-8 text-agro" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Инновации</h3>
-              <p className="text-gray-600">
-                Постоянное внедрение современных технологий и передовых методов 
-                для повышения эффективности производства.
+              <p className="text-lg text-gray-700">
+                Мы стремимся к постоянному совершенствованию производственных процессов, 
+                внедрению инновационных технологий и развитию кадрового потенциала.
               </p>
             </div>
           </div>
