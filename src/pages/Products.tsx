@@ -264,6 +264,7 @@ const Products = () => {
           <ContactForm 
             title="Оформить заказ" 
             subtitle="Заполните форму, и наш менеджер свяжется с вами для уточнения деталей заказа"
+            productName={selectedProduct || ''}
           />
         </DialogContent>
       </Dialog>

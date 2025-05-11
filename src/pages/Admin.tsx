@@ -259,6 +259,10 @@ const Admin = () => {
     date: new Date().toISOString().split('T')[0]
   });
 
+  // Add state for message modal
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState("");
+
   const {
     products,
     vacancies,
@@ -662,7 +666,21 @@ const Admin = () => {
                             )}
                           </td>
                           <td style={td}>
-                            <div style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <div 
+                              style={{ 
+                                maxWidth: 200, 
+                                overflow: 'hidden', 
+                                textOverflow: 'ellipsis', 
+                                whiteSpace: 'nowrap',
+                                cursor: 'pointer',
+                                color: '#2196f3',
+                                textDecoration: 'underline'
+                              }}
+                              onClick={() => {
+                                setSelectedMessage(inquiry.message);
+                                setShowMessageModal(true);
+                              }}
+                            >
                               {inquiry.message}
                             </div>
                           </td>
@@ -920,6 +938,44 @@ const Admin = () => {
               <button type="button" style={{ ...addBtn, background: colors.danger, width: isMobile ? '100%' : undefined, fontSize: isMobile ? 15 : 16 }} onClick={() => setShowNewsModal(false)}>Отмена</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* Message Modal */}
+      {showMessageModal && (
+        <div style={modalBg}>
+          <div style={{...modalCard, maxWidth: 600, maxHeight: '80vh', overflow: 'auto'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
+              <h2 style={{fontSize: 22, fontWeight: 600}}>Полный текст сообщения</h2>
+              <button 
+                onClick={() => setShowMessageModal(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: 24,
+                  cursor: 'pointer',
+                  color: '#666'
+                }}
+              >
+                ×
+              </button>
+            </div>
+            <div style={{whiteSpace: 'pre-wrap', lineHeight: 1.6}}>
+              {selectedMessage}
+            </div>
+            <div style={{marginTop: 24, textAlign: 'right'}}>
+              <button 
+                onClick={() => setShowMessageModal(false)}
+                style={{
+                  ...addBtn,
+                  background: colors.danger,
+                  marginRight: 0
+                }}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
