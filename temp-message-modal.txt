@@ -1,0 +1,37 @@
+{/* Message Modal */}
+{showMessageModal && (
+  <div style={modalBg}>
+    <div style={{...modalCard, maxWidth: 600, maxHeight: '80vh', overflow: 'auto'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16}}>
+        <h2 style={{fontSize: 22, fontWeight: 600}}>Полный текст сообщения</h2>
+        <button 
+          onClick={() => setShowMessageModal(false)}
+          style={{
+            background: 'none',
+            border: 'none',
+            fontSize: 24,
+            cursor: 'pointer',
+            color: '#666'
+          }}
+        >
+          ×
+        </button>
+      </div>
+      <div style={{whiteSpace: 'pre-wrap', lineHeight: 1.6}}>
+        {selectedMessage}
+      </div>
+      <div style={{marginTop: 24, textAlign: 'right'}}>
+        <button 
+          onClick={() => setShowMessageModal(false)}
+          style={{
+            ...addBtn,
+            background: colors.danger,
+            marginRight: 0
+          }}
+        >
+          Закрыть
+        </button>
+      </div>
+    </div>
+  </div>
+)}
