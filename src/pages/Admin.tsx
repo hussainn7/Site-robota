@@ -635,17 +635,31 @@ const Admin = () => {
                           <td style={td}>{inquiry.email}</td>
                           <td style={td}>{inquiry.phone}</td>
                           <td style={td}>
-                            {inquiry.type === 'product' && inquiry.productName && (
-                              <span style={{ color: '#0277bd', fontWeight: 500 }}>
-                                {inquiry.productName}
+                            {inquiry.type === 'product' && (
+                              <div>
+                                <span style={{ background: '#e3f2fd', color: '#0277bd', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px', marginBottom: '4px', display: 'inline-block' }}>
+                                  ПРОДУКЦИЯ
+                                </span>
+                                {inquiry.productName && (
+                                  <div style={{ marginTop: '4px' }}>{inquiry.productName}</div>
+                                )}
+                              </div>
+                            )}
+                            {inquiry.type === 'vacancy' && (
+                              <div>
+                                <span style={{ background: '#fff3e0', color: '#f57c00', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px', marginBottom: '4px', display: 'inline-block' }}>
+                                  ВАКАНСИИ
+                                </span>
+                                {inquiry.vacancyTitle && (
+                                  <div style={{ marginTop: '4px' }}>{inquiry.vacancyTitle}</div>
+                                )}
+                              </div>
+                            )}
+                            {inquiry.type === 'contact' && (
+                              <span style={{ background: '#e8f5e9', color: '#2e7d32', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>
+                                КОНТАКТЫ
                               </span>
                             )}
-                            {inquiry.type === 'vacancy' && inquiry.vacancyTitle && (
-                              <span style={{ color: '#f57c00', fontWeight: 500 }}>
-                                {inquiry.vacancyTitle}
-                              </span>
-                            )}
-                            {(!inquiry.productName && !inquiry.vacancyTitle) && '—'}
                           </td>
                           <td style={td}>
                             <div style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
