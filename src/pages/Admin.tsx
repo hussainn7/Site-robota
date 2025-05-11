@@ -615,6 +615,7 @@ const Admin = () => {
                         <th style={th}>Имя</th>
                         <th style={th}>Email</th>
                         <th style={th}>Телефон</th>
+                        <th style={th}>Детали</th>
                         <th style={th}>Сообщение</th>
                         <th style={th}>Статус</th>
                         <th style={th}></th>
@@ -626,13 +627,26 @@ const Admin = () => {
                           <td style={td}>{inquiry.id}</td>
                           <td style={td}>{new Date(inquiry.date).toLocaleDateString()}</td>
                           <td style={td}>
-                            {inquiry.type === 'product' ? 'Заказ продукта' :
+                            {inquiry.type === 'product' ? 'Заказ продукции' :
                              inquiry.type === 'vacancy' ? 'Отклик на вакансию' :
                              'Контактная форма'}
                           </td>
                           <td style={td}>{inquiry.name}</td>
                           <td style={td}>{inquiry.email}</td>
                           <td style={td}>{inquiry.phone}</td>
+                          <td style={td}>
+                            {inquiry.type === 'product' && inquiry.productName && (
+                              <span style={{ color: '#0277bd', fontWeight: 500 }}>
+                                {inquiry.productName}
+                              </span>
+                            )}
+                            {inquiry.type === 'vacancy' && inquiry.vacancyTitle && (
+                              <span style={{ color: '#f57c00', fontWeight: 500 }}>
+                                {inquiry.vacancyTitle}
+                              </span>
+                            )}
+                            {(!inquiry.productName && !inquiry.vacancyTitle) && '—'}
+                          </td>
                           <td style={td}>
                             <div style={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {inquiry.message}

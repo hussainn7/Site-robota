@@ -122,7 +122,7 @@ const Index = () => {
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Свяжитесь с нами для получения дополнительной информации о нашей продукции и услугах
           </p>
-          <Link to="/feedback">
+          <Link to="/contacts">
             <Button size="lg" variant="outline" className="bg-white text-agro hover:bg-gray-100">
               Связаться с нами
             </Button>

@@ -153,7 +153,7 @@ const Navbar = () => {
               <Settings size={20} />
             </Link>
             <Button asChild>
-              <Link to="/feedback" className="btn-primary">
+              <Link to="/contacts" className="btn-primary">
                 Связаться
               </Link>
             </Button>
@@ -206,7 +206,7 @@ const Navbar = () => {
               </Link>
               <Button asChild className="mx-4">
                 <Link
-                  to="/feedback"
+                  to="/contacts"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Связаться
