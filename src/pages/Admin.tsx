@@ -960,7 +960,18 @@ const Admin = () => {
                 ×
               </button>
             </div>
-            <div style={{whiteSpace: 'pre-wrap', lineHeight: 1.6}}>
+            <div style={{
+              whiteSpace: 'pre-wrap', 
+              lineHeight: 1.6,
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              maxWidth: '100%',
+              padding: '12px',
+              background: '#f9f9f9',
+              borderRadius: '8px',
+              border: '1px solid #eee',
+              fontSize: '16px'
+            }}>
               {selectedMessage}
             </div>
             <div style={{marginTop: 24, textAlign: 'right'}}>
