@@ -28,13 +28,16 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
     setIsSubmitting(true);
 
     try {
+      // Prepare resume message text based on whether a file was uploaded
+      const resumeText = formData.resume ? `Резюме: ${formData.resume.name}` : 'Резюме: Не прикреплено';
+      
       // Add the inquiry to the context
       addInquiry({
         type: 'vacancy',
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        message: `${formData.message}\n\nЖелаемая должность: ${formData.position}\nРезюме: ${formData.resume?.name || 'Не прикреплено'}`,
+        message: `${formData.message}\n\nЖелаемая должность: ${formData.position}\n${resumeText}`,
         vacancyTitle
       });
 
@@ -48,7 +51,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
         resume: null,
       });
       setSubmitSuccess(true);
-      toast.success('Ваше резюме успешно отправлено!');
+      toast.success('Ваша заявка успешно отправлена!');
       
       // Reset success message after 3 seconds
       setTimeout(() => setSubmitSuccess(false), 3000);
@@ -170,14 +173,13 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
 
         <div>
           <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-1">
-            Резюме (PDF, DOC, DOCX) *
+            Резюме (PDF, DOC, DOCX) (необязательно)
           </label>
           <Input
             id="resume"
             name="resume"
             type="file"
             accept=".pdf,.doc,.docx"
-            required
             onChange={handleFileChange}
             className="w-full"
           />
