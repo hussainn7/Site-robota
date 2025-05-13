@@ -17,8 +17,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
     email: "",
     phone: "",
     position: "",
-    message: "",
-    resume: null as File | null,
+    message: ""
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -28,8 +27,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
     setIsSubmitting(true);
 
     try {
-      // Prepare resume message text based on whether a file was uploaded
-      const resumeText = formData.resume ? `Резюме: ${formData.resume.name}` : 'Резюме: Не прикреплено';
+      // No longer tracking resume uploads
       
       // Add the inquiry to the context
       addInquiry({
@@ -37,7 +35,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        message: `${formData.message}\n\nЖелаемая должность: ${formData.position}\n${resumeText}`,
+        message: `${formData.message}\n\nЖелаемая должность: ${formData.position}`,
         vacancyTitle
       });
 
@@ -47,8 +45,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
         email: "",
         phone: "",
         position: "",
-        message: "",
-        resume: null,
+        message: ""
       });
       setSubmitSuccess(true);
       toast.success('Ваша заявка успешно отправлена!');
@@ -68,11 +65,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({ ...prev, resume: e.target.files![0] }));
-    }
-  };
+
 
   if (submitSuccess) {
     return (
@@ -171,19 +164,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({ vacancyTitle }) => {
           />
         </div>
 
-        <div>
-          <label htmlFor="resume" className="block text-sm font-medium text-gray-700 mb-1">
-            Резюме (PDF, DOC, DOCX) (необязательно)
-          </label>
-          <Input
-            id="resume"
-            name="resume"
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="w-full"
-          />
-        </div>
+
 
         <button
           type="submit"
