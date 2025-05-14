@@ -9,6 +9,7 @@ type Product = {
   imageUrl?: string;
   price: string;
   category: string;
+  unit: string; // Unit of measurement: кг, л, шт
 };
 
 type Vacancy = {
@@ -53,6 +54,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/DyGfm8x6/5197285658434073189.jpg",
     price: "от 650 руб/т",
     category: "grain",
+    unit: "кг",
   },
   {
     id: 2,
@@ -61,6 +63,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/WzFNG3T2/5197285658434073187.jpg",
     price: "от 550 руб/т",
     category: "grain",
+    unit: "кг",
   },
   {
     id: 3,
@@ -69,6 +72,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/bJFYSbXC/5197285658434073185.jpg",
     price: "от 1200 руб/т",
     category: "grain",
+    unit: "кг",
   },
   {
     id: 4,
@@ -77,6 +81,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/mgNbNKfF/5197285658434073186.jpg",
     price: "от 750 руб/т",
     category: "beans",
+    unit: "кг",
   },
   {
     id: 5,
@@ -85,6 +90,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/5yhxnV28/5197285658434073190.jpg",
     price: "от 950 руб/т",
     category: "beans",
+    unit: "кг",
   },
   {
     id: 6,
@@ -93,6 +99,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/SsKNKdPY/5197285658434073188.jpg",
     price: "Договорная",
     category: "livestock",
+    unit: "л",
   },
   {
     id: 7,
@@ -101,6 +108,7 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/SsKNKdPY/5197285658434073188.jpg",
     price: "Договорная",
     category: "livestock",
+    unit: "кг",
   },
   {
     id: 8,
@@ -109,15 +117,17 @@ const defaultProducts: Product[] = [
     image: "https://i.postimg.cc/mgNbNKfF/5197285658434073186.jpg",
     price: "от 100 руб/час",
     category: "services",
+    unit: "шт",
   },
   {
     id: 9,
     name: "Хранение зерна",
-    description: "Услуги по временному хранению зерна в специально оборудованных складских помещениях.",
-    image: "https://i.postimg.cc/WzFNG3T2/5197285658434073187.jpg",
-    price: "от 5 руб/т в день",
+    description: "Услуги по хранению зерна в современных элеваторах с контролем качества.",
+    image: "https://i.postimg.cc/bJFYSbXC/5197285658434073185.jpg",
+    price: "от 80 руб/т в месяц",
     category: "services",
-  },
+    unit: "шт",
+  }
 ];
 
 const defaultVacancies: Vacancy[] = [

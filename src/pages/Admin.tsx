@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAdminData } from "@/context/AdminDataContext";
 import { useInquiries } from "@/context/InquiriesContext";
 import { useNavigate } from 'react-router-dom';
+import { Badge } from "@/components/ui/badge";
 
 // --- STYLE SYSTEM ---
 const colors = {
@@ -192,6 +193,7 @@ interface ProductForm {
   image: string | File;
   price: string;
   category: string;
+  unit: string; // Unit of measurement: кг, л, шт
 }
 
 interface VacancyForm {
@@ -237,11 +239,12 @@ const Admin = () => {
   const [editVacancyId, setEditVacancyId] = useState<number | null>(null);
   const [editNewsId, setEditNewsId] = useState<number | null>(null);
   const [productForm, setProductForm] = useState<ProductForm>({
-    name: "",
-    description: "",
-    image: "",
-    price: "",
-    category: "grain",
+    name: '',
+    description: '',
+    image: '',
+    price: '',
+    category: 'grain',
+    unit: 'кг'
   });
   const [vacancyForm, setVacancyForm] = useState<VacancyForm>({
     title: "",
@@ -305,24 +308,27 @@ const Admin = () => {
     setProductForm({ ...productForm, [e.target.name]: e.target.value });
   };
   const openAddProduct = () => {
+    setProductForm({ name: '', description: '', image: '', price: '', category: 'grain', unit: 'кг' });
     setEditProductId(null);
-    setProductForm({ name: "", description: "", image: "", price: "", category: "grain" });
     setShowProductModal(true);
   };
   const openEditProduct = (product: any) => {
+    setProductForm({
+      ...product,
+      unit: product.unit || 'кг' // Ensure unit is set, default to кг if not present
+    });
     setEditProductId(product.id);
-    setProductForm(product);
     setShowProductModal(true);
   };
   const handleSaveProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productForm.name) return;
-    if (editProductId !== null) {
+    if (editProductId) {
       editProduct({ ...productForm, id: editProductId });
     } else {
-      addProduct({ ...productForm });
+      addProduct(productForm);
     }
     setShowProductModal(false);
+    setProductForm({ name: '', description: '', image: '', price: '', category: 'grain', unit: 'кг' });
   };
   const handleDeleteProduct = (id: number) => {
     if (window.confirm("Удалить продукт?")) removeProduct(id);
@@ -401,6 +407,29 @@ const Admin = () => {
   // Add new function to handle inquiry status change
   const handleInquiryStatusChange = (id: number, newStatus: 'new' | 'in-progress' | 'completed') => {
     updateInquiryStatus(id, newStatus);
+  };
+  
+  // Parse product details from order message
+  const parseOrderDetails = (productName: string | undefined) => {
+    if (!productName) return [];
+    
+    // Split by comma to get individual products
+    return productName.split(', ').map(item => {
+      // Check if it has quantity and unit information
+      const match = item.match(/(.+)\s\((\d+)\s([\u0430-\u044f\u0410-\u042f]+)\)/);
+      
+      if (match) {
+        // Return structured data if it matches the pattern
+        return {
+          name: match[1],
+          quantity: match[2],
+          unit: match[3]
+        };
+      }
+      
+      // Return just the name if it doesn't match the pattern
+      return { name: item, quantity: null, unit: null };
+    });
   };
 
   // Add new function to delete inquiry
@@ -495,7 +524,7 @@ const Admin = () => {
                   <table style={{ ...table, fontSize: isMobile ? 14 : 16 }}>
                     <thead>
                       <tr>
-                        <th style={th}>ID</th><th style={th}>Название</th><th style={th}>Описание</th><th style={th}>Изображение</th><th style={th}>Цена</th><th style={th}>Категория</th><th style={th}></th>
+                        <th style={th}>ID</th><th style={th}>Название</th><th style={th}>Описание</th><th style={th}>Изображение</th><th style={th}>Цена</th><th style={th}>Категория</th><th style={th}>Единица измерения</th><th style={th}></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -507,6 +536,7 @@ const Admin = () => {
                           <td style={td}><img src={typeof product.image === 'string' ? product.image : URL.createObjectURL(product.image as File)} alt="img" style={{ width: isMobile ? 36 : 70, borderRadius: 8 }} /></td>
                           <td style={td}>{product.price}</td>
                           <td style={td}>{product.category}</td>
+                          <td style={td}>{product.unit}</td>
                           <td style={td}>
                             <button style={iconBtn(colors.action)} title="Редактировать" onClick={() => openEditProduct(product)}>✏️</button>
                             <button style={iconBtn(colors.danger)} title="Удалить" onClick={() => handleDeleteProduct(product.id)}>🗑️</button>
@@ -619,10 +649,11 @@ const Admin = () => {
                         <th style={th}>Имя</th>
                         <th style={th}>Email</th>
                         <th style={th}>Телефон</th>
-                        <th style={th}>Детали</th>
                         <th style={th}>Сообщение</th>
+                        <th style={th}>Детали заказа</th>
+                        <th style={th}>Дата</th>
                         <th style={th}>Статус</th>
-                        <th style={th}></th>
+                        <th style={th}>Действия</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -632,58 +663,42 @@ const Admin = () => {
                           <td style={td}>{new Date(inquiry.date).toLocaleDateString()}</td>
                           <td style={td}>
                             {inquiry.type === 'product' ? 'Заказ продукции' :
-                             inquiry.type === 'vacancy' ? 'Отклик на вакансию' :
-                             'Контактная форма'}
+                              inquiry.type === 'vacancy' ? 'Отклик на вакансию' :
+                                'Контактная форма'}
                           </td>
                           <td style={td}>{inquiry.name}</td>
                           <td style={td}>{inquiry.email}</td>
                           <td style={td}>{inquiry.phone}</td>
-                          <td style={td}>
-                            {inquiry.type === 'product' && (
-                              <div>
-                                <span style={{ background: '#e3f2fd', color: '#0277bd', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px', marginBottom: '4px', display: 'inline-block' }}>
-                                  ПРОДУКЦИЯ
-                                </span>
-                                {inquiry.productName && (
-                                  <div style={{ marginTop: '4px' }}>{inquiry.productName}</div>
-                                )}
-                              </div>
-                            )}
-                            {inquiry.type === 'vacancy' && (
-                              <div>
-                                <span style={{ background: '#fff3e0', color: '#f57c00', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px', marginBottom: '4px', display: 'inline-block' }}>
-                                  ВАКАНСИИ
-                                </span>
-                                {inquiry.vacancyTitle && (
-                                  <div style={{ marginTop: '4px' }}>{inquiry.vacancyTitle}</div>
-                                )}
-                              </div>
-                            )}
-                            {inquiry.type === 'contact' && (
-                              <span style={{ background: '#e8f5e9', color: '#2e7d32', fontWeight: 500, padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>
-                                КОНТАКТЫ
-                              </span>
-                            )}
-                          </td>
-                          <td style={td}>
-                            <div 
-                              style={{ 
-                                maxWidth: 200, 
-                                overflow: 'hidden', 
-                                textOverflow: 'ellipsis', 
-                                whiteSpace: 'nowrap',
-                                cursor: 'pointer',
-                                color: '#2196f3',
-                                textDecoration: 'underline'
-                              }}
+                          <td style={{ ...td, maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <span
+                              style={{ cursor: 'pointer', color: colors.action, textDecoration: 'underline' }}
                               onClick={() => {
                                 setSelectedMessage(inquiry.message);
                                 setShowMessageModal(true);
                               }}
                             >
-                              {inquiry.message}
-                            </div>
+                              {inquiry.message.substring(0, 50)}{inquiry.message.length > 50 ? '...' : ''}
+                            </span>
                           </td>
+                          <td style={td}>
+                            {inquiry.productName ? (
+                              <div style={{ maxWidth: 250 }}>
+                                {parseOrderDetails(inquiry.productName).map((item, idx) => (
+                                  <div key={idx} style={{ marginBottom: 4, display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ fontWeight: item.quantity ? 600 : 400, marginRight: 8 }}>{item.name}</span>
+                                    {item.quantity && (
+                                      <Badge style={{ background: colors.primary, fontSize: 12 }}>
+                                        {item.quantity} {item.unit}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                          <td style={td}>{new Date(inquiry.date).toLocaleDateString()}</td>
                           <td style={td}>
                             <select
                               value={inquiry.status}
@@ -799,11 +814,37 @@ const Admin = () => {
             </div>
 
             <input name="price" placeholder="Цена" value={productForm.price} onChange={handleProductFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }} />
-            <select name="category" value={productForm.category} onChange={handleProductFormChange} style={{ ...loginInput, fontSize: isMobile ? 14 : 18 }}>
-              <option value="grain">Зерновые</option>
-              <option value="beans">Бобовые</option>
+            
+            <select
+              name="category"
+              value={productForm.category}
+              onChange={handleProductFormChange}
+              style={{
+                ...loginInput,
+                marginBottom: 20
+              }}
+            >
+              <option value="grain">Зерновые культуры</option>
+              <option value="beans">Бобовые культуры</option>
               <option value="livestock">Животноводство</option>
               <option value="services">Услуги</option>
+            </select>
+            
+            <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+              Единица измерения
+            </label>
+            <select
+              name="unit"
+              value={productForm.unit}
+              onChange={handleProductFormChange}
+              style={{
+                ...loginInput,
+                marginBottom: 20
+              }}
+            >
+              <option value="кг">кг (килограмм)</option>
+              <option value="л">л (литр)</option>
+              <option value="шт">шт (штука)</option>
             </select>
             <div style={{ display: "flex", gap: 10, marginTop: 10, flexDirection: isMobile ? 'column' : 'row' }}>
               <button type="submit" style={{ ...addBtn, width: isMobile ? '100%' : undefined, fontSize: isMobile ? 15 : 16 }}>{editProductId ? "Сохранить" : "Добавить"}</button>

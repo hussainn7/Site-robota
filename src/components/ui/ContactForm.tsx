@@ -7,13 +7,15 @@ interface ContactFormProps {
   subtitle?: string;
   productName?: string;
   vacancyTitle?: string;
+  onSubmitSuccess?: () => void;
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ 
   title = "Свяжитесь с нами", 
   subtitle = "Заполните форму, и мы свяжемся с вами в ближайшее время",
   productName,
-  vacancyTitle
+  vacancyTitle,
+  onSubmitSuccess
 }) => {
   const { addInquiry } = useInquiries();
   const [formData, setFormData] = useState({
@@ -48,6 +50,11 @@ const ContactForm: React.FC<ContactFormProps> = ({
       
       // Reset success message after 3 seconds
       setTimeout(() => setSubmitSuccess(false), 3000);
+      
+      // Call onSubmitSuccess callback if provided
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       toast.error('Произошла ошибка при отправке формы. Пожалуйста, попробуйте еще раз.');

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Layout from "@/components/layout/Layout";
 import PageHeader from "@/components/layout/PageHeader";
 import ProductCard from "@/components/ui/ProductCard";
@@ -7,6 +7,21 @@ import ContactForm from "@/components/ui/ContactForm";
 import { useAdminData } from "@/context/AdminDataContext";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ShoppingCart, Trash2, Plus, Minus, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+
+// Define cart item type
+interface CartItem {
+  productId: number;
+  name: string;
+  price: string;
+  quantity: number;
+  unit: string;
+  category: string;
+}
 
 const Products = () => {
   const { products } = useAdminData();
@@ -16,6 +31,27 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState("name-asc");
   const [priceFilter, setPriceFilter] = useState("all");
+  
+  // Cart state
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  
+  // Product quantity and unit selection
+  const [productQuantities, setProductQuantities] = useState<{[key: number]: number}>({});
+  
+  // Load cart from localStorage on component mount
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      setCart(JSON.parse(savedCart));
+    }
+  }, []);
+  
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
   // Product categories
   const categories = [
@@ -101,23 +137,115 @@ const Products = () => {
   
   const getCategoryBadgeColor = (categoryId: string) => {
     switch(categoryId) {
-      case 'grain':
-        return 'bg-green-100 text-green-800';
-      case 'beans':
-        return 'bg-blue-100 text-blue-800';
-      case 'livestock':
-        return 'bg-amber-100 text-amber-800';
-      case 'services':
-        return 'bg-purple-100 text-purple-800';
+      case "grain":
+        return "bg-amber-100 text-amber-800";
+      case "beans":
+        return "bg-green-100 text-green-800";
+      case "livestock":
+        return "bg-blue-100 text-blue-800";
+      case "services":
+        return "bg-purple-100 text-purple-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
-
-  // Handle product order
-  const handleOrderClick = (productName: string) => {
-    setSelectedProduct(productName);
-    setOpen(true);
+  
+  // Get unit for a product from its data or use default
+  const getProductUnit = (product: any) => {
+    // If product has a unit defined, use it
+    if (product.unit) {
+      return product.unit;
+    }
+    
+    // Otherwise use default logic based on category and name
+    if (product.category === 'livestock' && product.name.toLowerCase().includes('молоко')) {
+      return 'л';
+    } else if (product.category === 'services') {
+      return 'шт';
+    }
+    return 'кг';
+  };
+  
+  // Handle adding product to cart
+  const handleAddToCart = (product: any) => {
+    const productId = product.id;
+    const existingItemIndex = cart.findIndex(item => item.productId === productId);
+    const unit = getProductUnit(product);
+    
+    if (existingItemIndex >= 0) {
+      // Update quantity if already in cart
+      const updatedCart = [...cart];
+      updatedCart[existingItemIndex].quantity += productQuantities[productId] || 1;
+      setCart(updatedCart);
+    } else {
+      // Add new item to cart
+      setCart([...cart, {
+        productId,
+        name: product.name,
+        price: product.price,
+        quantity: productQuantities[productId] || 1,
+        unit,
+        category: product.category
+      }]);
+    }
+    
+    // Reset quantity
+    setProductQuantities(prev => ({
+      ...prev,
+      [productId]: 1
+    }));
+    
+    toast.success(`${name} добавлен в корзину`);
+  };
+  
+  // Handle removing item from cart
+  const handleRemoveFromCart = (productId: number) => {
+    setCart(cart.filter(item => item.productId !== productId));
+    toast.success('Товар удален из корзины');
+  };
+  
+  // Handle quantity change for cart items
+  const handleCartQuantityChange = (productId: number, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    setCart(cart.map(item => 
+      item.productId === productId ? {...item, quantity: newQuantity} : item
+    ));
+  };
+  
+  // Handle unit change for cart items
+  const handleUnitChange = (productId: number, unit: string) => {
+    setCart(cart.map(item => 
+      item.productId === productId ? {...item, unit} : item
+    ));
+  };
+  
+  // Handle quantity change for products before adding to cart
+  const handleQuantityChange = (productId: number, change: number) => {
+    setProductQuantities(prev => {
+      const currentQuantity = prev[productId] || 1;
+      const newQuantity = Math.max(1, currentQuantity + change);
+      return {...prev, [productId]: newQuantity};
+    });
+  };
+  
+  // Calculate total items in cart
+  const cartItemCount = useMemo(() => {
+    return cart.reduce((total, item) => total + item.quantity, 0);
+  }, [cart]);
+  
+  // Handle checkout
+  const handleCheckout = () => {
+    setShowCart(false);
+    setShowCheckout(true);
+  };
+  
+  // Handle order completion
+  const handleOrderComplete = () => {
+    setShowCheckout(false);
+    setCart([]);
+    localStorage.removeItem('cart');
+    toast.success('Ваш заказ успешно отправлен!');
   };
 
   return (
@@ -204,6 +332,21 @@ const Products = () => {
       </section>
 
       {/* Products Grid */}
+      {/* Cart Button */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <button 
+          onClick={() => setShowCart(true)}
+          className="bg-agro hover:bg-agro-dark text-white rounded-full p-4 shadow-lg flex items-center justify-center relative transition-all duration-300 hover:scale-105"
+        >
+          <ShoppingCart size={24} />
+          {cartItemCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+              {cartItemCount}
+            </span>
+          )}
+        </button>
+      </div>
+      
       <section className="py-16">
         <div className="container-custom">
           <h2 className="section-title mb-12">Наша продукция</h2>
@@ -228,13 +371,38 @@ const Products = () => {
                     <h3 className="text-xl font-bold mb-2">{product.name}</h3>
                     <p className="text-gray-600 mb-4">{product.description}</p>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-semibold text-agro">{product.price}</span>
-                      <button
-                        onClick={() => handleOrderClick(product.name)}
-                        className="bg-agro hover:bg-agro-dark text-white font-bold py-2 px-4 rounded transition-colors duration-300"
-                      >
-                        Заказать
-                      </button>
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-semibold text-agro">{product.price}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center border rounded-md">
+                            <button 
+                              onClick={() => handleQuantityChange(product.id, -1)}
+                              className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                            >
+                              <Minus size={16} />
+                            </button>
+                            <span className="px-3 py-1">{productQuantities[product.id] || 1}</span>
+                            <button 
+                              onClick={() => handleQuantityChange(product.id, 1)}
+                              className="px-2 py-1 text-gray-600 hover:bg-gray-100"
+                            >
+                              <Plus size={16} />
+                            </button>
+                            <span className="px-2 py-1 text-gray-500 text-sm border-l">
+                              {getProductUnit(product)}
+                            </span>
+                          </div>
+                          <button
+                            onClick={() => handleAddToCart(product)}
+                            className="bg-agro hover:bg-agro-dark text-white font-bold py-2 px-4 rounded transition-colors duration-300 flex items-center"
+                          >
+                            <ShoppingCart size={16} className="mr-2" />
+                            В корзину
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -252,19 +420,122 @@ const Products = () => {
         </div>
       </section>
 
-      {/* Order Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[600px]">
+      {/* Shopping Cart Dialog */}
+      <Dialog open={showCart} onOpenChange={setShowCart}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Заказать продукцию</DialogTitle>
+            <DialogTitle className="text-2xl">Корзина</DialogTitle>
             <DialogDescription>
-              {selectedProduct && `Оставьте заявку на продукцию: ${selectedProduct}`}
+              {cart.length > 0 ? 'Ваши товары' : 'Ваша корзина пуста'}
             </DialogDescription>
           </DialogHeader>
+          
+          {cart.length > 0 ? (
+            <>
+              <div className="space-y-4 my-4">
+                {cart.map((item) => (
+                  <div key={item.productId} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{item.name}</h4>
+                      <p className="text-sm text-gray-600">{item.price}</p>
+                    </div>
+                    
+                    <div className="flex items-center space-x-3">
+                      <div className="flex items-center">
+                        <button 
+                          onClick={() => handleCartQuantityChange(item.productId, item.quantity - 1)}
+                          className="p-1 text-gray-600 hover:bg-gray-100 rounded-md"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="px-2">{item.quantity}</span>
+                        <button 
+                          onClick={() => handleCartQuantityChange(item.productId, item.quantity + 1)}
+                          className="p-1 text-gray-600 hover:bg-gray-100 rounded-md"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                      
+                      <Select 
+                        value={item.unit} 
+                        onValueChange={(value) => handleUnitChange(item.productId, value)}
+                      >
+                        <SelectTrigger className="w-[70px]">
+                          <SelectValue placeholder="Ед." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="кг">кг</SelectItem>
+                          <SelectItem value="л">л</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      
+                      <button 
+                        onClick={() => handleRemoveFromCart(item.productId)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded-md"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <Separator className="my-4" />
+              
+              <div className="flex justify-between items-center mb-4">
+                <span className="font-semibold">Всего товаров:</span>
+                <span>{cartItemCount}</span>
+              </div>
+              
+              <div className="flex justify-end space-x-3">
+                <Button variant="outline" onClick={() => setShowCart(false)}>
+                  Продолжить покупки
+                </Button>
+                <Button className="bg-agro hover:bg-agro-dark" onClick={handleCheckout}>
+                  Оформить заказ
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="text-center py-8">
+              <ShoppingCart className="mx-auto mb-4 text-gray-400" size={48} />
+              <p className="text-gray-600">Ваша корзина пуста</p>
+              <Button className="mt-4 bg-agro hover:bg-agro-dark" onClick={() => setShowCart(false)}>
+                Начать покупки
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Checkout Dialog */}
+      <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">Оформление заказа</DialogTitle>
+            <DialogDescription>
+              Заполните форму для оформления заказа
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="my-4">
+            <h3 className="font-semibold mb-2">Ваш заказ:</h3>
+            <div className="space-y-2 max-h-[200px] overflow-y-auto p-2 border rounded-md">
+              {cart.map((item) => (
+                <div key={item.productId} className="flex justify-between">
+                  <span>{item.name}</span>
+                  <span>{item.quantity} {item.unit}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
           <ContactForm 
-            title="Оформить заказ" 
+            title="Данные для заказа" 
             subtitle="Заполните форму, и наш менеджер свяжется с вами для уточнения деталей заказа"
-            productName={selectedProduct || ''}
+            productName={cart.map(item => `${item.name} (${item.quantity} ${item.unit})`).join(', ')}
+            onSubmitSuccess={handleOrderComplete}
           />
         </DialogContent>
       </Dialog>
