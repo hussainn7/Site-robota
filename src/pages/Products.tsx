@@ -11,7 +11,7 @@ import { ShoppingCart, Trash2, Plus, Minus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 
 // Define cart item type
 interface CartItem {
@@ -195,13 +195,17 @@ const Products = () => {
       [productId]: 1
     }));
     
-    toast.success(`${name} добавлен в корзину`);
+    toast.success(`${product.name} добавлен в корзину`, {
+      position: 'bottom-right'
+    });
   };
   
   // Handle removing item from cart
   const handleRemoveFromCart = (productId: number) => {
     setCart(cart.filter(item => item.productId !== productId));
-    toast.success('Товар удален из корзины');
+    toast.success('Товар удален из корзины', {
+      position: 'bottom-right'
+    });
   };
   
   // Handle quantity change for cart items
@@ -229,6 +233,17 @@ const Products = () => {
     });
   };
   
+  // Handle direct input of quantity
+  const handleQuantityInput = (productId: number, value: string) => {
+    const numValue = parseInt(value, 10);
+    if (!isNaN(numValue) && numValue > 0) {
+      setProductQuantities(prev => ({
+        ...prev,
+        [productId]: numValue
+      }));
+    }
+  };
+  
   // Calculate total items in cart
   const cartItemCount = useMemo(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
@@ -245,11 +260,15 @@ const Products = () => {
     setShowCheckout(false);
     setCart([]);
     localStorage.removeItem('cart');
-    toast.success('Ваш заказ успешно отправлен!');
+    toast.success('Ваш заказ успешно отправлен!', {
+      position: 'bottom-right'
+    });
   };
 
   return (
     <Layout>
+      {/* Custom Toaster position */}
+      <Toaster position="bottom-right" richColors />
       <PageHeader 
         title="Продукция и услуги" 
         description="Высококачественная сельскохозяйственная продукция и услуги"
@@ -383,7 +402,13 @@ const Products = () => {
                             >
                               <Minus size={16} />
                             </button>
-                            <span className="px-3 py-1">{productQuantities[product.id] || 1}</span>
+                            <input
+                              type="number"
+                              min="1"
+                              value={productQuantities[product.id] || 1}
+                              onChange={(e) => handleQuantityInput(product.id, e.target.value)}
+                              className="w-12 text-center px-1 py-1 border-0 focus:ring-0 focus:outline-none"
+                            />
                             <button 
                               onClick={() => handleQuantityChange(product.id, 1)}
                               className="px-2 py-1 text-gray-600 hover:bg-gray-100"
@@ -448,7 +473,18 @@ const Products = () => {
                         >
                           <Minus size={14} />
                         </button>
-                        <span className="px-2">{item.quantity}</span>
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            if (!isNaN(val) && val > 0) {
+                              handleCartQuantityChange(item.productId, val);
+                            }
+                          }}
+                          className="w-10 text-center px-1 py-1 border-0 focus:ring-0 focus:outline-none"
+                        />
                         <button 
                           onClick={() => handleCartQuantityChange(item.productId, item.quantity + 1)}
                           className="p-1 text-gray-600 hover:bg-gray-100 rounded-md"
