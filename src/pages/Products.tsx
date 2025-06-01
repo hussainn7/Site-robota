@@ -244,10 +244,8 @@ const Products = () => {
     }
   };
   
-  // Calculate total items in cart
-  const cartItemCount = useMemo(() => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  }, [cart]);
+  // Количество уникальных товаров в корзине
+  const cartItemCount = cart.length;
   
   // Handle checkout
   const handleCheckout = () => {
@@ -483,7 +481,7 @@ const Products = () => {
                               handleCartQuantityChange(item.productId, val);
                             }
                           }}
-                          className="w-10 text-center px-1 py-1 border-0 focus:ring-0 focus:outline-none"
+                          className="w-20 text-center px-1 py-1 border-0 focus:ring-0 focus:outline-none"
                         />
                         <button 
                           onClick={() => handleCartQuantityChange(item.productId, item.quantity + 1)}

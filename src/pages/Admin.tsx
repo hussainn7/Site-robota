@@ -3,6 +3,7 @@ import { useAdminData } from "@/context/AdminDataContext";
 import { useInquiries } from "@/context/InquiriesContext";
 import { useNavigate } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
+import { Printer } from "lucide-react";
 
 // --- STYLE SYSTEM ---
 const colors = {
@@ -265,6 +266,10 @@ const Admin = () => {
   // Add state for message modal
   const [showMessageModal, setShowMessageModal] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
+
+  // State for print modal
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const [printInquiry, setPrintInquiry] = useState<Inquiry | null>(null);
 
   const {
     products,
@@ -720,6 +725,16 @@ const Admin = () => {
                           </td>
                           <td style={td}>
                             <button
+                              style={iconBtn(colors.action)}
+                              title="Распечатать"
+                              onClick={() => {
+                                setPrintInquiry(inquiry);
+                                setShowPrintModal(true);
+                              }}
+                            >
+                              <Printer size={18} />
+                            </button>
+                            <button
                               style={iconBtn(colors.danger)}
                               title="Удалить"
                               onClick={() => {
@@ -1023,6 +1038,76 @@ const Admin = () => {
                   background: colors.danger,
                   marginRight: 0
                 }}
+              >
+                Закрыть
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Print Modal */}
+      {showPrintModal && printInquiry && (
+        <div style={{ ...modalBg, zIndex: 3000 }}>
+          <div id="print-area" style={{ ...modalCard, maxWidth: 600, width: '100%', margin: 0, zIndex: 3001, background: '#fff', color: '#222', fontSize: 17 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 600 }}>Заявка №{printInquiry.id}</h2>
+              <button 
+                onClick={() => setShowPrintModal(false)}
+                style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: '#666' }}
+              >×</button>
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <b>Тип:</b> {printInquiry.type === 'product' ? 'Заказ продукции' : printInquiry.type === 'vacancy' ? 'Отклик на вакансию' : 'Контактная форма'}
+            </div>
+            <div style={{ marginBottom: 12 }}><b>Имя:</b> {printInquiry.name}</div>
+            <div style={{ marginBottom: 12 }}><b>Email:</b> {printInquiry.email}</div>
+            <div style={{ marginBottom: 12 }}><b>Телефон:</b> {printInquiry.phone}</div>
+            <div style={{ marginBottom: 12 }}><b>Дата:</b> {new Date(printInquiry.date).toLocaleString()}</div>
+            <div style={{ marginBottom: 12 }}><b>Статус:</b> {printInquiry.status === 'new' ? 'Новая' : printInquiry.status === 'in-progress' ? 'В работе' : 'Завершена'}</div>
+            {printInquiry.productName && (
+              <div style={{ marginBottom: 12 }}>
+                <b>Детали заказа:</b>
+                <ul style={{ margin: '8px 0 0 18px' }}>
+                  {parseOrderDetails(printInquiry.productName).map((item, idx) => (
+                    <li key={idx}>
+                      {item.name} {item.quantity && `(${item.quantity} ${item.unit})`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {printInquiry.vacancyTitle && (
+              <div style={{ marginBottom: 12 }}><b>Вакансия:</b> {printInquiry.vacancyTitle}</div>
+            )}
+            <div style={{ marginBottom: 12 }}>
+              <b>Сообщение:</b>
+              <div style={{ whiteSpace: 'pre-wrap', background: '#f9f9f9', borderRadius: 8, padding: 10, marginTop: 4, border: '1px solid #eee' }}>{printInquiry.message}</div>
+            </div>
+            <div style={{ marginTop: 24, textAlign: 'right', display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+              <button
+                onClick={() => {
+                  // Print only the print-area
+                  const printContents = document.getElementById('print-area')?.innerHTML;
+                  const win = window.open('', '', 'height=700,width=900');
+                  if (win && printContents) {
+                    win.document.write('<html><head><title>Печать заявки</title>');
+                    win.document.write('<style>body{font-family:sans-serif;padding:24px;} h2{margin-bottom:18px;} b{font-weight:600;} ul{margin:0 0 0 18px;} li{margin-bottom:4px;} .print-btn{display:none;}</style>');
+                    win.document.write('</head><body>');
+                    win.document.write(printContents);
+                    win.document.write('</body></html>');
+                    win.document.close();
+                    win.focus();
+                    setTimeout(() => { win.print(); win.close(); }, 300);
+                  }
+                }}
+                style={{ ...addBtn, background: colors.action, color: '#fff', fontSize: 16 }}
+              >
+                <Printer size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} /> Печать
+              </button>
+              <button
+                onClick={() => setShowPrintModal(false)}
+                style={{ ...addBtn, background: colors.danger, color: '#fff', fontSize: 16 }}
               >
                 Закрыть
               </button>
