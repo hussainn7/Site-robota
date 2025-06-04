@@ -656,7 +656,6 @@ const Admin = () => {
                         <th style={th}>Телефон</th>
                         <th style={th}>Сообщение</th>
                         <th style={th}>Детали заказа</th>
-                        <th style={th}>Дата</th>
                         <th style={th}>Статус</th>
                         <th style={th}>Действия</th>
                       </tr>
@@ -703,7 +702,6 @@ const Admin = () => {
                               "-"
                             )}
                           </td>
-                          <td style={td}>{new Date(inquiry.date).toLocaleDateString()}</td>
                           <td style={td}>
                             <select
                               value={inquiry.status}
