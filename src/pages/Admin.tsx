@@ -1054,6 +1054,7 @@ const Admin = () => {
               <h2 style={{ fontSize: 22, fontWeight: 600 }}>Заявка №{printInquiry.id}</h2>
               <button 
                 onClick={() => setShowPrintModal(false)}
+                className="no-print"
                 style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer', color: '#666' }}
               >×</button>
             </div>
@@ -1069,11 +1070,15 @@ const Admin = () => {
               <div style={{ marginBottom: 12 }}>
                 <b>Детали заказа:</b>
                 <ul style={{ margin: '8px 0 0 18px' }}>
-                  {parseOrderDetails(printInquiry.productName).map((item, idx) => (
-                    <li key={idx}>
-                      {item.name} {item.quantity && `(${item.quantity} ${item.unit})`}
-                    </li>
-                  ))}
+                  {parseOrderDetails(printInquiry.productName).map((item, idx) => {
+                    const productDetails = products.find(p => p.name.trim() === item.name.trim());
+                    const price = productDetails ? productDetails.price : 'Цена не указана';
+                    return (
+                      <li key={idx}>
+                        {item.name} {item.quantity && `(${item.quantity} ${item.unit})`} - <b>{price}{productDetails && productDetails.price !== 'Договорная' ? ' руб.' : ''}</b>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}
@@ -1092,7 +1097,7 @@ const Admin = () => {
                   const win = window.open('', '', 'height=700,width=900');
                   if (win && printContents) {
                     win.document.write('<html><head><title>Печать заявки</title>');
-                    win.document.write('<style>body{font-family:sans-serif;padding:24px;} h2{margin-bottom:18px;} b{font-weight:600;} ul{margin:0 0 0 18px;} li{margin-bottom:4px;} .print-btn{display:none;}</style>');
+                    win.document.write('<style>body{font-family:sans-serif;padding:24px;} h2{margin-bottom:18px;} b{font-weight:600;} ul{margin:0 0 0 18px;} li{margin-bottom:4px;} .print-btn{display:none;} .no-print{display:none !important;}</style>');
                     win.document.write('</head><body>');
                     win.document.write(printContents);
                     win.document.write('</body></html>');
@@ -1102,12 +1107,14 @@ const Admin = () => {
                   }
                 }}
                 style={{ ...addBtn, background: colors.action, color: '#fff', fontSize: 16 }}
+                className="no-print"
               >
                 <Printer size={18} style={{ marginRight: 8, verticalAlign: 'middle' }} /> Печать
               </button>
               <button
                 onClick={() => setShowPrintModal(false)}
-                style={{ ...addBtn, background: colors.danger, color: '#fff', fontSize: 16 }}
+                style={{ ...addBtn, background: colors.secondary, color: '#fff', padding: '10px 20px', fontSize: 16 }}
+                className="no-print"
               >
                 Закрыть
               </button>

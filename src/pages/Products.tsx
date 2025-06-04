@@ -266,7 +266,7 @@ const Products = () => {
   return (
     <Layout>
       {/* Custom Toaster position */}
-      <Toaster position="bottom-right" richColors />
+      <Toaster position="bottom-right" richColors duration={2500} />
       <PageHeader 
         title="Продукция и услуги" 
         description="Высококачественная сельскохозяйственная продукция и услуги"
